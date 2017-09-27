@@ -1,0 +1,6 @@
+--require should
+--require babel-register
+--globals expect
+--timeout 3000
+--ui bdd
+--reporter spec
