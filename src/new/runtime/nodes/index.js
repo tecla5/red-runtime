@@ -1,34 +1,34 @@
 /**
  * Copyright JS Foundation and other contributors, http://js.foundation
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an 'AS IS' BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
 
-var when = require("when");
-var path = require("path");
-var fs = require("fs");
-var clone = require("clone");
+var when = require('when');
+var path = require('path');
+var fs = require('fs');
+var clone = require('clone');
 
-var registry = require("./registry");
-var credentials = require("./credentials");
-var flows = require("./flows");
-var flowUtil = require("./flows/util")
-var context = require("./context");
-var Node = require("./Node");
-var library = require("./library");
-var events = require("../events");
+var registry = require('./registry');
+var credentials = require('./credentials');
+var flows = require('./flows');
+var flowUtil = require('./flows/util')
+var context = require('./context');
+var Node = require('./Node');
+var library = require('./library');
+var events = require('../events');
 
-module.exports = class Nodes {
+class Nodes {
     // Lifecycle
     constructor(runtime) {
         this.settings = runtime.settings;
@@ -101,7 +101,7 @@ module.exports = class Nodes {
         var creds = credentials.get(id);
         if (creds) {
             creds = clone(creds);
-            //console.log("Attaching credentials to ",node.id);
+            //console.log('Attaching credentials to ',node.id);
             // allow $(foo) syntax to substitute env variables for credentials also...
             for (var p in creds) {
                 if (creds.hasOwnProperty(p)) {
@@ -122,14 +122,14 @@ module.exports = class Nodes {
      * @param opts - optional additional options for the node
      */
     registerType(nodeSet, type, constructor, opts) {
-        if (typeof type !== "string") {
+        if (typeof type !== 'string') {
             // This is someone calling the api directly, rather than via the
             // RED object provided to a node. Log a warning
-            this.log.warn("[" + nodeSet + "] Deprecated call to RED.runtime.nodes.registerType - node-set name must be provided as first argument");
+            this.log.warn('[' + nodeSet + '] Deprecated call to RED.runtime.nodes.registerType - node-set name must be provided as first argument');
             opts = constructor;
             constructor = type;
             type = nodeSet;
-            nodeSet = "";
+            nodeSet = '';
         }
         if (opts) {
             if (opts.credentials) {
@@ -139,7 +139,7 @@ module.exports = class Nodes {
                 try {
                     this.settings.registerNodeSettings(type, opts.settings);
                 } catch (err) {
-                    log.warn("[" + type + "] " + err.message);
+                    log.warn('[' + type + '] ' + err.message);
                 }
             }
         }
@@ -154,14 +154,43 @@ module.exports = class Nodes {
     uninstallModule(module) {
         var info = registry.getModuleInfo(module);
         if (!info) {
-            throw new Error(log._("nodes.index.unrecognised-module", {
+            throw new Error(log._('nodes.index.unrecognised-module', {
                 module: module
             }));
         } else {
             for (var i = 0; i < info.nodes.length; i++) {
-                flows.checkTypeInUse(module + "/" + info.nodes[i].name);
+                flows.checkTypeInUse(module + '/' + info.nodes[i].name);
             }
             return registry.uninstallModule(module);
         }
     }
 };
+
+const flow = require('./flow')
+const {
+    Flow
+} = flow
+
+
+const registry = require('./registry')
+const {
+    RegistryFactory,
+    Installer,
+    Loader,
+    Registry,
+    LocalFilesystem
+} = registry
+
+module.exports = {
+    Nodes,
+    Credentials,
+    Context,
+    Node,
+
+    RegistryFactory,
+    Installer,
+    Loader,
+    Registry,
+    LocalFilesystem,
+    Flow
+}

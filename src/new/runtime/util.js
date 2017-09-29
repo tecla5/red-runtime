@@ -1,44 +1,44 @@
 /**
  * Copyright JS Foundation and other contributors, http://js.foundation
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an 'AS IS' BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
 
-var clone = require("clone");
-var jsonata = require("jsonata");
+var clone = require('clone');
+var jsonata = require('jsonata');
 
 function generateId() {
-    return (1+Math.random()*4294967295).toString(16);
+    return (1 + Math.random() * 4294967295).toString(16);
 }
 
 function ensureString(o) {
     if (Buffer.isBuffer(o)) {
         return o.toString();
-    } else if (typeof o === "object") {
+    } else if (typeof o === 'object') {
         return JSON.stringify(o);
-    } else if (typeof o === "string") {
+    } else if (typeof o === 'string') {
         return o;
     }
-    return ""+o;
+    return '' + o;
 }
 
 function ensureBuffer(o) {
     if (Buffer.isBuffer(o)) {
         return o;
-    } else if (typeof o === "object") {
+    } else if (typeof o === 'object') {
         o = JSON.stringify(o);
-    } else if (typeof o !== "string") {
-        o = ""+o;
+    } else if (typeof o !== 'string') {
+        o = '' + o;
     }
     return new Buffer(o);
 }
@@ -62,7 +62,7 @@ function cloneMessage(msg) {
     return m;
 }
 
-function compareObjects(obj1,obj2) {
+function compareObjects(obj1, obj2) {
     var i;
     if (obj1 === obj2) {
         return true;
@@ -80,8 +80,8 @@ function compareObjects(obj1,obj2) {
         if (obj1.length !== obj2.length) {
             return false;
         }
-        for (i=0;i<obj1.length;i++) {
-            if (!compareObjects(obj1[i],obj2[i])) {
+        for (i = 0; i < obj1.length; i++) {
+            if (!compareObjects(obj1[i], obj2[i])) {
                 return false;
             }
         }
@@ -100,7 +100,7 @@ function compareObjects(obj1,obj2) {
             if (obj1.length !== obj2.length) {
                 return false;
             }
-            for (i=0;i<obj1.length;i++) {
+            for (i = 0; i < obj1.length; i++) {
                 if (obj1.readUInt8(i) !== obj2.readUInt8(i)) {
                     return false;
                 }
@@ -120,7 +120,7 @@ function compareObjects(obj1,obj2) {
     for (var k in obj1) {
         /* istanbul ignore else */
         if (obj1.hasOwnProperty(k)) {
-            if (!compareObjects(obj1[k],obj2[k])) {
+            if (!compareObjects(obj1[k], obj2[k])) {
                 return false;
             }
         }
@@ -134,7 +134,7 @@ function normalisePropertyExpression(str) {
 
     var length = str.length;
     if (length === 0) {
-        throw new Error("Invalid property expression: zero-length");
+        throw new Error('Invalid property expression: zero-length');
     }
     var parts = [];
     var start = 0;
@@ -142,89 +142,92 @@ function normalisePropertyExpression(str) {
     var inBox = false;
     var quoteChar;
     var v;
-    for (var i=0;i<length;i++) {
+    for (var i = 0; i < length; i++) {
         var c = str[i];
         if (!inString) {
-            if (c === "'" || c === '"') {
+            if (c === ''
+                ' || c === '
+                '') {
                 if (i != start) {
-                    throw new Error("Invalid property expression: unexpected "+c+" at position "+i);
+                    throw new Error('Invalid property expression: unexpected ' + c + ' at position ' + i);
                 }
                 inString = true;
                 quoteChar = c;
-                start = i+1;
+                start = i + 1;
             } else if (c === '.') {
-                if (i===0) {
-                    throw new Error("Invalid property expression: unexpected . at position 0");
+                if (i === 0) {
+                    throw new Error('Invalid property expression: unexpected . at position 0');
                 }
                 if (start != i) {
-                    v = str.substring(start,i);
+                    v = str.substring(start, i);
                     if (/^\d+$/.test(v)) {
                         parts.push(parseInt(v));
                     } else {
                         parts.push(v);
                     }
                 }
-                if (i===length-1) {
-                    throw new Error("Invalid property expression: unterminated expression");
+                if (i === length - 1) {
+                    throw new Error('Invalid property expression: unterminated expression');
                 }
                 // Next char is first char of an identifier: a-z 0-9 $ _
-                if (!/[a-z0-9\$\_]/i.test(str[i+1])) {
-                    throw new Error("Invalid property expression: unexpected "+str[i+1]+" at position "+(i+1));
+                if (!/[a-z0-9\$\_]/i.test(str[i + 1])) {
+                    throw new Error('Invalid property expression: unexpected ' + str[i + 1] + ' at position ' + (i + 1));
                 }
-                start = i+1;
+                start = i + 1;
             } else if (c === '[') {
                 if (i === 0) {
-                    throw new Error("Invalid property expression: unexpected "+c+" at position "+i);
+                    throw new Error('Invalid property expression: unexpected ' + c + ' at position ' + i);
                 }
                 if (start != i) {
-                    parts.push(str.substring(start,i));
+                    parts.push(str.substring(start, i));
                 }
-                if (i===length-1) {
-                    throw new Error("Invalid property expression: unterminated expression");
+                if (i === length - 1) {
+                    throw new Error('Invalid property expression: unterminated expression');
                 }
                 // Next char is either a quote or a number
-                if (!/["'\d]/.test(str[i+1])) {
-                    throw new Error("Invalid property expression: unexpected "+str[i+1]+" at position "+(i+1));
+                if (!/[''\d]/.test(str[i + 1])) {
+                    throw new Error('Invalid property expression: unexpected ' + str[i + 1] + ' at position ' + (i + 1));
                 }
-                start = i+1;
+                start = i + 1;
                 inBox = true;
             } else if (c === ']') {
                 if (!inBox) {
-                    throw new Error("Invalid property expression: unexpected "+c+" at position "+i);
+                    throw new Error('Invalid property expression: unexpected ' + c + ' at position ' + i);
                 }
                 if (start != i) {
-                    v = str.substring(start,i);
+                    v = str.substring(start, i);
                     if (/^\d+$/.test(v)) {
                         parts.push(parseInt(v));
                     } else {
-                        throw new Error("Invalid property expression: unexpected array expression at position "+start);
+                        throw new Error('Invalid property expression: unexpected array expression at position ' + start);
                     }
                 }
-                start = i+1;
+                start = i + 1;
                 inBox = false;
             } else if (c === ' ') {
-                throw new Error("Invalid property expression: unexpected ' ' at position "+i);
+                throw new Error('Invalid property expression: unexpected '
+                    ' at position ' + i);
             }
         } else {
             if (c === quoteChar) {
-                if (i-start === 0) {
-                    throw new Error("Invalid property expression: zero-length string at position "+start);
+                if (i - start === 0) {
+                    throw new Error('Invalid property expression: zero-length string at position ' + start);
                 }
-                parts.push(str.substring(start,i));
+                parts.push(str.substring(start, i));
                 // If inBox, next char must be a ]. Otherwise it may be [ or .
-                if (inBox && !/\]/.test(str[i+1])) {
-                    throw new Error("Invalid property expression: unexpected array expression at position "+start);
-                } else if (!inBox && i+1!==length && !/[\[\.]/.test(str[i+1])) {
-                    throw new Error("Invalid property expression: unexpected "+str[i+1]+" expression at position "+(i+1));
+                if (inBox && !/\]/.test(str[i + 1])) {
+                    throw new Error('Invalid property expression: unexpected array expression at position ' + start);
+                } else if (!inBox && i + 1 !== length && !/[\[\.]/.test(str[i + 1])) {
+                    throw new Error('Invalid property expression: unexpected ' + str[i + 1] + ' expression at position ' + (i + 1));
                 }
-                start = i+1;
+                start = i + 1;
                 inString = false;
             }
         }
 
     }
     if (inBox || inString) {
-        throw new Error("Invalid property expression: unterminated expression");
+        throw new Error('Invalid property expression: unterminated expression');
     }
     if (start < length) {
         parts.push(str.substring(start));
@@ -232,25 +235,25 @@ function normalisePropertyExpression(str) {
     return parts;
 }
 
-function getMessageProperty(msg,expr) {
+function getMessageProperty(msg, expr) {
     var result = null;
-    if (expr.indexOf('msg.')===0) {
+    if (expr.indexOf('msg.') === 0) {
         expr = expr.substring(4);
     }
     var msgPropParts = normalisePropertyExpression(expr);
     var m;
-    msgPropParts.reduce(function(obj, key) {
-        result = (typeof obj[key] !== "undefined" ? obj[key] : undefined);
+    msgPropParts.reduce(function (obj, key) {
+        result = (typeof obj[key] !== 'undefined' ? obj[key] : undefined);
         return result;
     }, msg);
     return result;
 }
 
-function setMessageProperty(msg,prop,value,createMissing) {
+function setMessageProperty(msg, prop, value, createMissing) {
     if (typeof createMissing === 'undefined') {
         createMissing = (typeof value !== 'undefined');
     }
-    if (prop.indexOf('msg.')===0) {
+    if (prop.indexOf('msg.') === 0) {
         prop = prop.substring(4);
     }
     var msgPropParts = normalisePropertyExpression(prop);
@@ -258,13 +261,13 @@ function setMessageProperty(msg,prop,value,createMissing) {
     var length = msgPropParts.length;
     var obj = msg;
     var key;
-    for (var i=0;i<length-1;i++) {
+    for (var i = 0; i < length - 1; i++) {
         key = msgPropParts[i];
         if (typeof key === 'string' || (typeof key === 'number' && !Array.isArray(obj))) {
             if (obj.hasOwnProperty(key)) {
                 obj = obj[key];
             } else if (createMissing) {
-                if (typeof msgPropParts[i+1] === 'string') {
+                if (typeof msgPropParts[i + 1] === 'string') {
                     obj[key] = {};
                 } else {
                     obj[key] = [];
@@ -277,7 +280,7 @@ function setMessageProperty(msg,prop,value,createMissing) {
             // obj is an array
             if (obj[key] === undefined) {
                 if (createMissing) {
-                    if (typeof msgPropParts[i+1] === 'string') {
+                    if (typeof msgPropParts[i + 1] === 'string') {
                         obj[key] = {};
                     } else {
                         obj[key] = [];
@@ -291,10 +294,10 @@ function setMessageProperty(msg,prop,value,createMissing) {
             }
         }
     }
-    key = msgPropParts[length-1];
-    if (typeof value === "undefined") {
+    key = msgPropParts[length - 1];
+    if (typeof value === 'undefined') {
         if (typeof key === 'number' && Array.isArray(obj)) {
-            obj.splice(key,1);
+            obj.splice(key, 1);
         } else {
             delete obj[key]
         }
@@ -305,7 +308,7 @@ function setMessageProperty(msg,prop,value,createMissing) {
 
 function evaluateNodeProperty(value, type, node, msg) {
     if (type === 'str') {
-        return ""+value;
+        return '' + value;
     } else if (type === 'num') {
         return Number(value);
     } else if (type === 'json') {
@@ -318,7 +321,7 @@ function evaluateNodeProperty(value, type, node, msg) {
         var data = JSON.parse(value);
         return Buffer.from(data);
     } else if (type === 'msg' && msg) {
-        return getMessageProperty(msg,value);
+        return getMessageProperty(msg, value);
     } else if (type === 'flow' && node) {
         return node.context().flow.get(value);
     } else if (type === 'global' && node) {
@@ -326,39 +329,41 @@ function evaluateNodeProperty(value, type, node, msg) {
     } else if (type === 'bool') {
         return /^true$/i.test(value);
     } else if (type === 'jsonata') {
-        var expr = prepareJSONataExpression(value,node);
-        return evaluateJSONataExpression(expr,msg);
+        var expr = prepareJSONataExpression(value, node);
+        return evaluateJSONataExpression(expr, msg);
     }
     return value;
 }
 
-function prepareJSONataExpression(value,node) {
+function prepareJSONataExpression(value, node) {
     var expr = jsonata(value);
-    expr.assign('flowContext',function(val) {
+    expr.assign('flowContext', function (val) {
         return node.context().flow.get(val);
     });
-    expr.assign('globalContext',function(val) {
+    expr.assign('globalContext', function (val) {
         return node.context().global.get(val);
     });
-    expr._legacyMode = /(^|[^a-zA-Z0-9_'"])msg([^a-zA-Z0-9_'"]|$)/.test(value);
+    expr._legacyMode = /(^|[^a-zA-Z0-9_''])msg([^a-zA-Z0-9_'']|$)/.test(value);
     return expr;
 }
 
-function evaluateJSONataExpression(expr,msg) {
+function evaluateJSONataExpression(expr, msg) {
     var context = msg;
     if (expr._legacyMode) {
-        context = {msg:msg};
+        context = {
+            msg: msg
+        };
     }
     return expr.evaluate(context);
 }
 
 
 function normaliseNodeTypeName(name) {
-    var result = name.replace(/[^a-zA-Z0-9]/g, " ");
+    var result = name.replace(/[^a-zA-Z0-9]/g, ' ');
     result = result.trim();
-    result = result.replace(/ +/g, " ");
+    result = result.replace(/ +/g, ' ');
     result = result.replace(/ ./g,
-        function(s) {
+        function (s) {
             return s.charAt(1).toUpperCase();
         }
     );

@@ -1,31 +1,31 @@
 /**
  * Copyright JS Foundation and other contributors, http://js.foundation
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an 'AS IS' BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
 
-var i18n = require("i18next");
-var when = require("when");
-var path = require("path");
-var fs = require("fs");
-var defaultLang = "en-US";
+var i18n = require('i18next');
+var when = require('when');
+var path = require('path');
+var fs = require('fs');
+var defaultLang = 'en-US';
 
 class MessageFileLoader {
     fetchOne(lng, ns, callback) {
         if (resourceMap[ns]) {
             var file = path.join(resourceMap[ns].basedir, lng, resourceMap[ns].file);
             //console.log(file);
-            fs.readFile(file, "utf8", function (err, content) {
+            fs.readFile(file, 'utf8', function (err, content) {
                 if (err) {
                     callback(err);
                 } else {
@@ -43,7 +43,7 @@ class MessageFileLoader {
                 }
             });
         } else {
-            callback(new Error("Unrecognised namespace"));
+            callback(new Error('Unrecognised namespace'));
         }
     }
 }
@@ -61,7 +61,7 @@ module.exports = class I18n {
             i18n.init({
                 ns: {
                     namespaces: [],
-                    defaultNs: "runtime"
+                    defaultNs: 'runtime'
                 },
                 fallbackLng: [defaultLang]
             }, function () {
@@ -107,7 +107,7 @@ module.exports = class I18n {
         if (resourceCache.hasOwnProperty(namespace)) {
             result = resourceCache[namespace][lang];
             if (!result) {
-                var langParts = lang.split("-");
+                var langParts = lang.split('-');
                 if (langParts.length == 2) {
                     result = resourceCache[namespace][langParts[0]];
                 }

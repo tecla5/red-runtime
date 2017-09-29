@@ -1,27 +1,27 @@
 /**
  * Copyright JS Foundation and other contributors, http://js.foundation
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an 'AS IS' BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
 
-var util = require("util");
-var EventEmitter = require("events").EventEmitter;
-var when = require("when");
+var util = require('util');
+var EventEmitter = require('events').EventEmitter;
+var when = require('when');
 
-var redUtil = require("../util");
-var Log = require("../log");
-var context = require("./context");
-var flows = require("./flows");
+var redUtil = require('../util');
+var Log = require('../log');
+var context = require('./context');
+var flows = require('./flows');
 
 function log_helper(self, level, msg) {
     var o = {
@@ -55,7 +55,7 @@ module.exports = class Node extends EventEmitter {
     }
 
     updateWires(wires) {
-        //console.log("UPDATE",this.id);
+        //console.log('UPDATE',this.id);
         this.wires = wires || [];
         delete this._wire;
 
@@ -86,7 +86,7 @@ module.exports = class Node extends EventEmitter {
 
     on(event, callback) {
         var node = this;
-        if (event == "close") {
+        if (event == 'close') {
             this._closeCallbacks.push(callback);
         } else {
             this.on(event, callback);
@@ -132,7 +132,7 @@ module.exports = class Node extends EventEmitter {
         var msgSent = false;
         var node;
 
-        if (msg === null || typeof msg === "undefined") {
+        if (msg === null || typeof msg === 'undefined') {
             return;
         } else if (!util.isArray(msg)) {
             if (this._wire) {
@@ -142,7 +142,7 @@ module.exports = class Node extends EventEmitter {
                 if (!msg._msgid) {
                     msg._msgid = redUtil.generateId();
                 }
-                this.metric("send", msg);
+                this.metric('send', msg);
                 node = flows.get(this._wire);
                 /* istanbul ignore else */
                 if (node) {
@@ -168,7 +168,7 @@ module.exports = class Node extends EventEmitter {
             /* istanbul ignore else */
             if (i < msg.length) {
                 var msgs = msg[i]; // msgs going to output i
-                if (msgs !== null && typeof msgs !== "undefined") {
+                if (msgs !== null && typeof msgs !== 'undefined') {
                     if (!util.isArray(msgs)) {
                         msgs = [msgs];
                     }
@@ -209,7 +209,7 @@ module.exports = class Node extends EventEmitter {
         if (!sentMessageId) {
             sentMessageId = redUtil.generateId();
         }
-        this.metric("send", {
+        this.metric('send', {
             _msgid: sentMessageId
         });
 
@@ -230,9 +230,9 @@ module.exports = class Node extends EventEmitter {
         if (!msg._msgid) {
             msg._msgid = redUtil.generateId();
         }
-        this.metric("receive", msg);
+        this.metric('receive', msg);
         try {
-            this.emit("input", msg);
+            this.emit('input', msg);
         } catch (err) {
             this.error(err, msg);
         }
@@ -248,7 +248,7 @@ module.exports = class Node extends EventEmitter {
 
     error(logMessage, msg) {
         if (typeof logMessage != 'boolean') {
-            logMessage = logMessage || "";
+            logMessage = logMessage || '';
         }
         var handled = false;
         if (msg) {
@@ -271,20 +271,20 @@ module.exports = class Node extends EventEmitter {
      * If called with no args, returns whether metric collection is enabled
      */
     metric(eventname, msg, metricValue) {
-        if (typeof eventname === "undefined") {
+        if (typeof eventname === 'undefined') {
             return Log.metric();
         }
         var metrics = {};
         metrics.level = Log.METRIC;
         metrics.nodeid = this.id;
-        metrics.event = "node." + this.type + "." + eventname;
+        metrics.event = 'node.' + this.type + '.' + eventname;
         metrics.msgid = msg._msgid;
         metrics.value = metricValue;
         Log.log(metrics);
     }
 
     /**
-     * status: { fill:"red|green", shape:"dot|ring", text:"blah" }
+     * status: { fill:'red|green', shape:'dot|ring', text:'blah' }
      */
     status(status) {
         flows.handleStatus(this, status);

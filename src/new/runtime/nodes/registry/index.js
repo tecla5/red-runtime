@@ -23,7 +23,7 @@ var registry = require('./registry');
 var loader = require('./loader');
 var installer = require('./installer');
 
-module.exports = class RegistryFactory {
+class RegistryFactory {
     constructor(runtime) {
         settings = runtime.settings;
         installer.init(runtime.settings);
@@ -74,3 +74,11 @@ module.exports = class RegistryFactory {
         });
     }
 };
+
+module.exports = {
+    RegistryFactory,
+    Installer,
+    Loader,
+    Registry,
+    LocalFilesystem
+}

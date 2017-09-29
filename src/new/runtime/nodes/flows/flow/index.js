@@ -23,7 +23,7 @@ var redUtil = require('../../../util');
 var flowUtil = require('../util');
 var nodeCloseTimeout = 15000;
 
-module.exports = class FlowFactory {
+class FlowFactory {
     constructor(settings) {
         this.nodeCloseTimeout = settings.nodeCloseTimeout || 15000;
     }
@@ -31,4 +31,8 @@ module.exports = class FlowFactory {
     create(global, conf) {
         return new Flow(global, conf);
     }
+}
+
+module.exports = {
+    Flow
 }

@@ -1,14 +1,14 @@
 /**
  * Copyright JS Foundation and other contributors, http://js.foundation
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an 'AS IS' BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -16,7 +16,7 @@
 
 // The `https` setting requires the `fs` module. Uncomment the following
 // to make it available:
-//var fs = require("fs");
+//var fs = require('fs');
 
 module.exports = {
     // the tcp port that the Node-RED web server is listening on
@@ -25,7 +25,7 @@ module.exports = {
     // By default, the Node-RED UI accepts connections on all IPv4 interfaces.
     // The following property can be used to listen on a specific interface. For
     // example, the following would only allow connections from the local machine.
-    //uiHost: "127.0.0.1",
+    //uiHost: '127.0.0.1',
 
     // Retry time in milliseconds for MQTT connections
     mqttReconnectTime: 15000,
@@ -67,7 +67,7 @@ module.exports = {
     // Note: once you set this property, do not change it - doing so will prevent
     // node-red from being able to decrypt your existing credentials and they will be
     // lost.
-    //credentialSecret: "a-secret-key",
+    //credentialSecret: 'a-secret-key',
 
     // By default, all user data is stored in the Node-RED install directory. To
     // use a different location, the following property can be used
@@ -103,18 +103,18 @@ module.exports = {
 
     // If you installed the optional node-red-dashboard you can set it's path
     // relative to httpRoot
-    //ui: { path: "ui" },
+    //ui: { path: 'ui' },
 
     // Securing Node-RED
     // -----------------
     // To password protect the Node-RED editor and admin API, the following
     // property can be used. See http://nodered.org/docs/security.html for details.
     //adminAuth: {
-    //    type: "credentials",
+    //    type: 'credentials',
     //    users: [{
-    //        username: "admin",
-    //        password: "$2a$08$zZWtXTja0fB1pzD4sHCMyOCMYz2Z6dNbM6tl8sJogENOMcxWV9DN.",
-    //        permissions: "*"
+    //        username: 'admin',
+    //        password: '$2a$08$zZWtXTja0fB1pzD4sHCMyOCMYz2Z6dNbM6tl8sJogENOMcxWV9DN.',
+    //        permissions: '*'
     //    }]
     //},
 
@@ -122,8 +122,8 @@ module.exports = {
     // the static content (httpStatic), the following properties can be used.
     // The pass field is a bcrypt hash of the password.
     // See http://nodered.org/docs/security.html#generating-the-password-hash
-    //httpNodeAuth: {user:"user",pass:"$2a$08$zZWtXTja0fB1pzD4sHCMyOCMYz2Z6dNbM6tl8sJogENOMcxWV9DN."},
-    //httpStaticAuth: {user:"user",pass:"$2a$08$zZWtXTja0fB1pzD4sHCMyOCMYz2Z6dNbM6tl8sJogENOMcxWV9DN."},
+    //httpNodeAuth: {user:'user',pass:'$2a$08$zZWtXTja0fB1pzD4sHCMyOCMYz2Z6dNbM6tl8sJogENOMcxWV9DN.'},
+    //httpStaticAuth: {user:'user',pass:'$2a$08$zZWtXTja0fB1pzD4sHCMyOCMYz2Z6dNbM6tl8sJogENOMcxWV9DN.'},
 
     // The following property can be used to enable HTTPS
     // See http://nodejs.org/api/https.html#https_https_createserver_options_requestlistener
@@ -150,8 +150,8 @@ module.exports = {
     // See https://github.com/troygoode/node-cors#configuration-options for
     // details on its contents. The following is a basic permissive set of options:
     //httpNodeCors: {
-    //    origin: "*",
-    //    methods: "GET,PUT,POST,DELETE"
+    //    origin: '*',
+    //    methods: 'GET,PUT,POST,DELETE'
     //},
 
     // If you need to set an http proxy please set an environment variable
@@ -200,8 +200,8 @@ module.exports = {
     functionGlobalContext: {
         // os:require('os'),
         // octalbonescript:require('octalbonescript'),
-        // jfive:require("johnny-five"),
-        // j5board:require("johnny-five").Board({repl:false})
+        // jfive:require('johnny-five'),
+        // j5board:require('johnny-five').Board({repl:false})
     },
 
     // The following property can be used to order the categories in the editor
@@ -222,7 +222,7 @@ module.exports = {
             // debug - record information which is more verbose than info + info + warn + error + fatal errors
             // trace - record very detailed logging + debug + info + warn + error + fatal errors
             // off - turn off all logging (doesn't affect metrics or audit)
-            level: "info",
+            level: 'info',
             // Whether or not to include metric events in the log output
             metrics: false,
             // Whether or not to include audit events in the log output

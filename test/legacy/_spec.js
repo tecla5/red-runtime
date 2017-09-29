@@ -1,14 +1,14 @@
 /**
  * Copyright JS Foundation and other contributors, http://js.foundation
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an 'AS IS' BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -24,13 +24,13 @@
  * TODO: Increase the scope of this check
  */
 
-var fs = require("fs");
-var should = require("should");
+var fs = require('fs');
+var should = require('should');
 var path = require('path');
 
 // Directories to check with .js files and _spec.js files respectively
-var jsdir = path.resolve(__dirname, "../../src/legacy");
-var testdir = path.resolve(__dirname, "../");
+var jsdir = path.resolve(__dirname, '../../src/legacy');
+var testdir = path.resolve(__dirname, '../');
 
 var fs = require('fs');
 var walkDirectory = function (dir, topdir, done) {
@@ -62,11 +62,11 @@ var walkDirectory = function (dir, topdir, done) {
                             next();
                         });
                     } else {
-                        if (path.extname(file) === ".js") {
-                            var testFile = file.replace(jsdir, testdir).replace(".js", "_spec.js");
+                        if (path.extname(file) === '.js') {
+                            var testFile = file.replace(jsdir, testdir).replace('.js', '_spec.js');
                             fs.exists(testFile, function (exists) {
                                 try {
-                                    exists.should.equal(true, testFile + " does not exist");
+                                    exists.should.equal(true, testFile + ' does not exist');
                                 } catch (err) {
                                     if (!topdir) {
                                         return done(err);
