@@ -290,7 +290,7 @@ module.exports = class LocalFileSystem {
         });
     }
 
-    function getFileMeta(root, path) {
+    getFileMeta(root, path) {
         var fn = fspath.join(root, path);
         var fd = fs.openSync(fn, "r");
         var size = fs.fstatSync(fd).size;
@@ -318,7 +318,7 @@ module.exports = class LocalFileSystem {
         return meta;
     }
 
-    function getFileBody(root, path) {
+    getFileBody(root, path) {
         var body = "";
         var fn = fspath.join(root, path);
         var fd = fs.openSync(fn, "r");
