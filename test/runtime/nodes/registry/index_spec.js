@@ -20,11 +20,11 @@ var path = require('path');
 var when = require('when');
 var fs = require('fs');
 
-var registry = require('../../../../../red/runtime/nodes/registry');
+var registry = require('../../../../src/runtime/nodes/registry');
 
-var installer = require('../../../../../red/runtime/nodes/registry/installer');
-var loader = require('../../../../../red/runtime/nodes/registry/loader');
-var typeRegistry = require('../../../../../red/runtime/nodes/registry/registry');
+var installer = require('../../../../src/runtime/nodes/registry/installer');
+var loader = require('../../../../src/runtime/nodes/registry/loader');
+var typeRegistry = require('../../../../src/runtime/nodes/registry/registry');
 
 
 

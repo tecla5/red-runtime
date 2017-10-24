@@ -19,11 +19,11 @@ var when = require('when');
 var sinon = require('sinon');
 var path = require('path');
 
-var typeRegistry = require('../../../../../red/runtime/nodes/registry/registry');
+var typeRegistry = require('../../../../src/runtime/nodes/registry/registry');
 
-var Node = require('../../../../../red/runtime/nodes/Node');
+var Node = require('../../../../src/runtime/nodes/Node');
 
-var events = require('../../../../../red/runtime/events');
+var events = require('../../../../src/runtime/events');
 
 var inherits = require('util').inherits;
 

@@ -21,9 +21,9 @@ var path = require('path');
 var fs = require('fs');
 
 var child_process = require('child_process');
-var installer = require('../../../../../red/runtime/nodes/registry/installer');
-var registry = require('../../../../../red/runtime/nodes/registry/index');
-var typeRegistry = require('../../../../../red/runtime/nodes/registry/registry');
+var installer = require('../../../../src/runtime/nodes/registry/installer');
+var registry = require('../../../../src/runtime/nodes/registry/index');
+var typeRegistry = require('../../../../src/runtime/nodes/registry/registry');
 
 describe('nodes/registry/installer', function () {
 

@@ -16,7 +16,7 @@
 var when = require('when');
 var should = require('should');
 var paff = require('path');
-var storage = require('../../../../red/runtime/storage/index');
+var storage = require('../../../src/runtime/storage/index');
 
 describe('red/storage/index', function () {
 

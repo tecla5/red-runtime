@@ -48,8 +48,7 @@ class MessageFileLoader {
     }
 }
 
-
-module.exports = class I18n {
+class I18n {
     constructor() {
         this.i = i18n
         this.defaultLang = defaultLang
@@ -116,3 +115,9 @@ module.exports = class I18n {
         return result;
     }
 }
+
+I18n.init = function (settings) {
+    return new I18n(settings)
+}
+
+module.exports = I18n

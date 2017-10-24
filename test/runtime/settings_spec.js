@@ -16,10 +16,14 @@
 var should = require('should');
 var when = require('when');
 
-var settings = require('../../../red/runtime/settings');
-
+var Settings = require('../../src/runtime/settings');
+var settings
 
 describe('red/settings', function () {
+
+    beforeEach(function () {
+        // settings = Settings.init()
+    })
 
     afterEach(function () {
         settings.reset();
@@ -31,7 +35,7 @@ describe('red/settings', function () {
             b: 'test',
             c: [1, 2, 3]
         }
-        settings.init(userSettings);
+        settings = Settings.init(userSettings);
 
         settings.available().should.be.false();
 
@@ -96,7 +100,7 @@ describe('red/settings', function () {
                 return when.resolve();
             }
         }
-        settings.init(userSettings);
+        settings = Settings.init(userSettings);
 
         settings.available().should.be.false();
 
@@ -128,7 +132,7 @@ describe('red/settings', function () {
             b: 'test',
             c: [1, 2, 3]
         }
-        settings.init(userSettings);
+        settings = Settings.init(userSettings);
 
         settings.available().should.be.false();
 
@@ -226,7 +230,7 @@ describe('red/settings', function () {
 
     it('prohibits registering the property whose name do not start with type name', function () {
         var userSettings = {};
-        settings.init(userSettings);
+        settings = Settings.init(userSettings);
         (function () {
             settings.registerNodeSettings('inject', {
                 color: {
@@ -273,7 +277,7 @@ describe('red/settings', function () {
             mqttColor: 'yellow',
             abColor: [1, 2, 3]
         }
-        settings.init(userSettings);
+        settings = Settings.init(userSettings);
         settings.registerNodeSettings('inject', {
             injectColor: {
                 value: 'red',
@@ -295,7 +299,7 @@ describe('red/settings', function () {
 
     it('disables/enables node settings', function () {
         var userSettings = {};
-        settings.init(userSettings);
+        settings = Settings.init(userSettings);
 
         var safeSettings = {};
         settings.registerNodeSettings('inject', {

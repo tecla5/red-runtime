@@ -18,7 +18,7 @@ var should = require('should');
 var fs = require('fs-extra');
 var path = require('path');
 
-var localfilesystem = require('../../../../red/runtime/storage/localfilesystem');
+var localfilesystem = require('../../../src/runtime/storage/localfilesystem');
 
 describe('LocalFileSystem', function () {
     var userDir = path.join(__dirname, '.testUserHome');

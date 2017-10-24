@@ -145,9 +145,7 @@ function normalisePropertyExpression(str) {
     for (var i = 0; i < length; i++) {
         var c = str[i];
         if (!inString) {
-            if (c === ''
-                ' || c === '
-                '') {
+            if (c === '\'' || c === '\"') {
                 if (i != start) {
                     throw new Error('Invalid property expression: unexpected ' + c + ' at position ' + i);
                 }
@@ -205,8 +203,7 @@ function normalisePropertyExpression(str) {
                 start = i + 1;
                 inBox = false;
             } else if (c === ' ') {
-                throw new Error('Invalid property expression: unexpected '
-                    ' at position ' + i);
+                throw new Error('Invalid property expression: unexpected at position ' + i);
             }
         } else {
             if (c === quoteChar) {

@@ -19,7 +19,7 @@ var when = require('when');
 var sinon = require('sinon');
 var path = require('path');
 
-var localfilesystem = require('../../../../../red/runtime/nodes/registry/localfilesystem');
+var localfilesystem = require('../../../../src/runtime/nodes/registry/localfilesystem');
 
 var resourcesDir = path.resolve(path.join(__dirname, '..', 'resources', 'local'));
 var userDir = path.resolve(path.join(__dirname, '..', 'resources', 'userDir'));

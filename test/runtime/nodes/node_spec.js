@@ -16,9 +16,9 @@
 
 var should = require('should');
 var sinon = require('sinon');
-var RedNode = require('../../../../red/runtime/nodes/Node');
-var Log = require('../../../../red/runtime/log');
-var flows = require('../../../../red/runtime/nodes/flows');
+var RedNode = require('../../../src/runtime/nodes/Node');
+var Log = require('../../../src/runtime/log');
+var flows = require('../../../src/runtime/nodes/flows');
 
 describe('Node', function () {
     describe('#constructor', function () {

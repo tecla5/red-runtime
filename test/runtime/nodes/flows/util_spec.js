@@ -18,9 +18,9 @@ var should = require('should');
 var sinon = require('sinon');
 var when = require('when');
 var clone = require('clone');
-var flowUtil = require('../../../../../red/runtime/nodes/flows/util');
-var typeRegistry = require('../../../../../red/runtime/nodes/registry');
-var redUtil = require('../../../../../red/runtime/util');
+var flowUtil = require('../../../../src/runtime/nodes/flows/util');
+var typeRegistry = require('../../../../src/runtime/nodes/registry');
+var redUtil = require('../../../../src/runtime/util');
 
 describe('flows/util', function () {
     var getType;

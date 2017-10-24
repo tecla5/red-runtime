@@ -18,13 +18,13 @@ var should = require('should');
 var sinon = require('sinon');
 var when = require('when');
 var clone = require('clone');
-var flows = require('../../../../../red/runtime/nodes/flows');
-var RedNode = require('../../../../../red/runtime/nodes/Node');
-var RED = require('../../../../../red/runtime/nodes');
-var events = require('../../../../../red/runtime/events');
-var credentials = require('../../../../../red/runtime/nodes/credentials');
-var typeRegistry = require('../../../../../red/runtime/nodes/registry');
-var Flow = require('../../../../../red/runtime/nodes/flows/Flow');
+var flows = require('../../../../src/runtime/nodes/flows');
+var RedNode = require('../../../../src/runtime/nodes/Node');
+var RED = require('../../../../src/runtime/nodes');
+var events = require('../../../../src/runtime/events');
+var credentials = require('../../../../src/runtime/nodes/credentials');
+var typeRegistry = require('../../../../src/runtime/nodes/registry');
+var Flow = require('../../../../src/runtime/nodes/flows/Flow');
 
 describe('flows/index', function () {
 

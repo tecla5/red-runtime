@@ -20,7 +20,7 @@ var sinon = require('sinon');
 var clone = require('clone');
 var util = require('util');
 
-var nodes = require('../../../../../red/runtime/nodes');
+var nodes = require('../../../../src/runtime/nodes');
 var {
     Node,
     Registry,
@@ -28,11 +28,11 @@ var {
     Flow
 } = nodes
 
-// var flowUtils = require('../../../../../red/runtime/nodes/flows/util');
-// var Flow = require('../../../../../red/runtime/nodes/flows/Flow');
-// var flows = require('../../../../../red/runtime/nodes/flows');
-// var Node = require('../../../../../red/runtime/nodes/Node');
-// var typeRegistry = require('../../../../../red/runtime/nodes/registry');
+// var flowUtils = require('../../../../src/runtime/nodes/flows/util');
+// var Flow = require('../../../../src/runtime/nodes/flows/Flow');
+// var flows = require('../../../../src/runtime/nodes/flows');
+// var Node = require('../../../../src/runtime/nodes/Node');
+// var typeRegistry = require('../../../../src/runtime/nodes/registry');
 
 
 describe('Flow', function () {

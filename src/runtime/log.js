@@ -47,8 +47,9 @@ var metricsEnabled = false;
 
 class LogHandler extends EventEmitter {
 
-    constructor(settings) {
+    constructor(log, settings) {
         super()
+        this.log = log
 
         this.logLevel = settings ? levels[settings.level] || levels.info : levels.info;
         this.metricsOn = settings ? settings.metrics || false : false;
@@ -56,7 +57,7 @@ class LogHandler extends EventEmitter {
 
         metricsEnabled = metricsEnabled || this.metricsOn;
 
-        this.handler = (settings && settings.handler) ? settings.handler(settings) : consoleLogger;
+        this.handler = (settings && settings.handler) ? settings.handler(settings) : this.consoleLogger.bind(this);
         this.on('log', function (msg) {
             if (this.shouldReportMessage(msg.level)) {
                 this.handler(msg);
@@ -65,29 +66,39 @@ class LogHandler extends EventEmitter {
     }
 
     shouldReportMessage(msglevel) {
+        const {
+            log
+        } = this
         return (msglevel == log.METRIC && this.metricsOn) ||
             (msglevel == log.AUDIT && this.auditOn) ||
             msglevel <= this.logLevel;
     }
-}
 
-function consoleLogger(msg) {
-    if (msg.level == log.METRIC || msg.level == log.AUDIT) {
-        util.log('[' + levelNames[msg.level] + '] ' + JSON.stringify(msg));
-    } else {
-        if (verbose && msg.msg.stack) {
-            util.log('[' + levelNames[msg.level] + '] ' + (msg.type ? '[' + msg.type + ':' + (msg.name || msg.id) + '] ' : '') + msg.msg.stack);
+    consoleLogger(msg) {
+        const {
+            log
+        } = this
+        const {
+            verbose
+        } = log
+
+        if (msg.level == log.METRIC || msg.level == log.AUDIT) {
+            util.log('[' + levelNames[msg.level] + '] ' + JSON.stringify(msg));
         } else {
-            var message = msg.msg;
-            if (typeof message === 'object' && message.toString() === '[object Object]' && message.message) {
-                message = message.message;
+            if (verbose && msg.msg.stack) {
+                util.log('[' + levelNames[msg.level] + '] ' + (msg.type ? '[' + msg.type + ':' + (msg.name || msg.id) + '] ' : '') + msg.msg.stack);
+            } else {
+                var message = msg.msg;
+                if (typeof message === 'object' && message.toString() === '[object Object]' && message.message) {
+                    message = message.message;
+                }
+                util.log('[' + levelNames[msg.level] + '] ' + (msg.type ? '[' + msg.type + ':' + (msg.name || msg.id) + '] ' : '') + message);
             }
-            util.log('[' + levelNames[msg.level] + '] ' + (msg.type ? '[' + msg.type + ':' + (msg.name || msg.id) + '] ' : '') + message);
         }
     }
 }
 
-module.exports = class Log {
+class Log {
     constructor(settings) {
         this.codes = {
             FATAL: 10,
@@ -100,27 +111,30 @@ module.exports = class Log {
             METRIC: 99
         }
 
-        metricsEnabled = false;
-        logHandlers = [];
-        var loggerSettings = {};
-        verbose = settings.verbose;
+        this.settings = settings
+        this.metricsEnabled = false;
+        this.logHandlers = [];
+        this.loggerSettings = {};
+        this.verbose = settings.verbose;
+
         if (settings.logging) {
             var keys = Object.keys(settings.logging);
             if (keys.length === 0) {
-                log.addHandler(new LogHandler());
+                this.addHandler(new LogHandler(this));
             } else {
                 for (var i = 0, l = keys.length; i < l; i++) {
                     var config = settings.logging[keys[i]];
-                    loggerSettings = config || {};
+                    this.loggerSettings = config || {};
                     if ((keys[i] === 'console') || config.handler) {
-                        log.addHandler(new LogHandler(loggerSettings));
+                        this.addHandler(new LogHandler(this, this.loggerSettings));
                     }
                 }
             }
         } else {
-            log.addHandler(new LogHandler());
+            this.addHandler(new LogHandler());
         }
     }
+
     addHandler(func) {
         logHandlers.push(func);
     }
@@ -137,31 +151,31 @@ module.exports = class Log {
         });
     }
     info(msg) {
-        log.log({
+        this.log({
             level: this.codes.INFO,
             msg: msg
         });
     }
     warn(msg) {
-        log.log({
+        this.log({
             level: this.codes.WARN,
             msg: msg
         });
     }
     error(msg) {
-        log.log({
+        this.log({
             level: this.codes.ERROR,
             msg: msg
         });
     }
     trace(msg) {
-        log.log({
+        this.log({
             level: this.codes.TRACE,
             msg: msg
         });
     }
     debug(msg) {
-        log.log({
+        this.log({
             level: this.codes.DEBUG,
             msg: msg
         });
@@ -177,6 +191,12 @@ module.exports = class Log {
             msg.path = req.path;
             msg.ip = (req.headers && req.headers['x-forwarded-for']) || (req.connection && req.connection.remoteAddress) || undefined;
         }
-        log.log(msg);
+        this.log(msg);
     }
 }
+
+Log.init = function (settings) {
+    return new Log(settings)
+}
+
+module.exports = Log

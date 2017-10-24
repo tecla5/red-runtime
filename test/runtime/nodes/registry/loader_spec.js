@@ -20,12 +20,12 @@ var sinon = require('sinon');
 var path = require('path');
 var fs = require('fs');
 
-var loader = require('../../../../../red/runtime/nodes/registry/loader');
+var loader = require('../../../../src/runtime/nodes/registry/loader');
 
-var localfilesystem = require('../../../../../red/runtime/nodes/registry/localfilesystem');
-var registry = require('../../../../../red/runtime/nodes/registry/registry');
+var localfilesystem = require('../../../../src/runtime/nodes/registry/localfilesystem');
+var registry = require('../../../../src/runtime/nodes/registry/registry');
 
-var nodes = require('../../../../../red/runtime/nodes/registry');
+var nodes = require('../../../../src/runtime/nodes/registry');
 
 var resourcesDir = path.resolve(path.join(__dirname, '..', 'resources', 'local'));
 

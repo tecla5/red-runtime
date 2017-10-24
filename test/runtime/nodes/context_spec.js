@@ -16,122 +16,131 @@
 
 var should = require("should");
 var sinon = require('sinon');
-var Context = require("../../../../red/runtime/nodes/context");
+var Context = require("../../../src/runtime/nodes/context");
 
-describe('context', function() {
-    beforeEach(function() {
+describe('context', function () {
+    beforeEach(function () {
         Context.init({});
     });
-    afterEach(function() {
-        Context.clean({allNodes:{}});
+    afterEach(function () {
+        Context.clean({
+            allNodes: {}
+        });
     });
-    it('stores local property',function() {
-        var context1 = Context.get("1","flowA");
+    it('stores local property', function () {
+        var context1 = Context.get("1", "flowA");
         should.not.exist(context1.get("foo"));
-        context1.set("foo","test");
+        context1.set("foo", "test");
         context1.get("foo").should.eql("test");
     });
-    it('stores local property - creates parent properties',function() {
-        var context1 = Context.get("1","flowA");
-        context1.set("foo.bar","test");
-        context1.get("foo").should.eql({bar:"test"});
+    it('stores local property - creates parent properties', function () {
+        var context1 = Context.get("1", "flowA");
+        context1.set("foo.bar", "test");
+        context1.get("foo").should.eql({
+            bar: "test"
+        });
     });
-    it('deletes local property',function() {
-        var context1 = Context.get("1","flowA");
-        context1.set("foo.abc.bar1","test1");
-        context1.set("foo.abc.bar2","test2");
-        context1.get("foo.abc").should.eql({bar1:"test1",bar2:"test2"});
-        context1.set("foo.abc.bar1",undefined);
-        context1.get("foo.abc").should.eql({bar2:"test2"});
-        context1.set("foo.abc",undefined);
+    it('deletes local property', function () {
+        var context1 = Context.get("1", "flowA");
+        context1.set("foo.abc.bar1", "test1");
+        context1.set("foo.abc.bar2", "test2");
+        context1.get("foo.abc").should.eql({
+            bar1: "test1",
+            bar2: "test2"
+        });
+        context1.set("foo.abc.bar1", undefined);
+        context1.get("foo.abc").should.eql({
+            bar2: "test2"
+        });
+        context1.set("foo.abc", undefined);
         should.not.exist(context1.get("foo.abc"));
-        context1.set("foo",undefined);
+        context1.set("foo", undefined);
         should.not.exist(context1.get("foo"));
     });
-    it('stores flow property',function() {
-        var context1 = Context.get("1","flowA");
+    it('stores flow property', function () {
+        var context1 = Context.get("1", "flowA");
         should.not.exist(context1.flow.get("foo"));
-        context1.flow.set("foo","test");
+        context1.flow.set("foo", "test");
         context1.flow.get("foo").should.eql("test");
     });
-    it('stores global property',function() {
-        var context1 = Context.get("1","flowA");
+    it('stores global property', function () {
+        var context1 = Context.get("1", "flowA");
         should.not.exist(context1.global.get("foo"));
-        context1.global.set("foo","test");
+        context1.global.set("foo", "test");
         context1.global.get("foo").should.eql("test");
     });
 
-    it('keeps local context local', function() {
-        var context1 = Context.get("1","flowA");
-        var context2 = Context.get("2","flowA");
+    it('keeps local context local', function () {
+        var context1 = Context.get("1", "flowA");
+        var context2 = Context.get("2", "flowA");
 
         should.not.exist(context1.get("foo"));
         should.not.exist(context2.get("foo"));
-        context1.set("foo","test");
+        context1.set("foo", "test");
 
         context1.get("foo").should.eql("test");
         should.not.exist(context2.get("foo"));
     });
-    it('flow context accessible to all flow nodes', function() {
-        var context1 = Context.get("1","flowA");
-        var context2 = Context.get("2","flowA");
+    it('flow context accessible to all flow nodes', function () {
+        var context1 = Context.get("1", "flowA");
+        var context2 = Context.get("2", "flowA");
 
         should.not.exist(context1.flow.get("foo"));
         should.not.exist(context2.flow.get("foo"));
 
-        context1.flow.set("foo","test");
+        context1.flow.set("foo", "test");
         context1.flow.get("foo").should.eql("test");
         context2.flow.get("foo").should.eql("test");
     });
 
-    it('flow context not shared to nodes on other flows', function() {
-        var context1 = Context.get("1","flowA");
-        var context2 = Context.get("2","flowB");
+    it('flow context not shared to nodes on other flows', function () {
+        var context1 = Context.get("1", "flowA");
+        var context2 = Context.get("2", "flowB");
 
         should.not.exist(context1.flow.get("foo"));
         should.not.exist(context2.flow.get("foo"));
 
-        context1.flow.set("foo","test");
+        context1.flow.set("foo", "test");
         context1.flow.get("foo").should.eql("test");
         should.not.exist(context2.flow.get("foo"));
     });
 
-    it('global context shared to all nodes', function() {
-        var context1 = Context.get("1","flowA");
-        var context2 = Context.get("2","flowB");
+    it('global context shared to all nodes', function () {
+        var context1 = Context.get("1", "flowA");
+        var context2 = Context.get("2", "flowB");
 
         should.not.exist(context1.global.get("foo"));
         should.not.exist(context2.global.get("foo"));
 
-        context1.global.set("foo","test");
+        context1.global.set("foo", "test");
         context1.global.get("foo").should.eql("test");
         context2.global.get("foo").should.eql("test");
     });
 
-    it('deletes context',function() {
-        var context = Context.get("1","flowA");
+    it('deletes context', function () {
+        var context = Context.get("1", "flowA");
         should.not.exist(context.get("foo"));
-        context.set("foo","abc");
+        context.set("foo", "abc");
         context.get("foo").should.eql("abc");
 
-        Context.delete("1","flowA");
-        context = Context.get("1","flowA");
+        Context.delete("1", "flowA");
+        context = Context.get("1", "flowA");
         should.not.exist(context.get("foo"));
     })
 
-    it('enumerates context keys', function() {
-        var context = Context.get("1","flowA");
+    it('enumerates context keys', function () {
+        var context = Context.get("1", "flowA");
 
         var keys = context.keys();
         keys.should.be.an.Array();
         keys.should.be.empty();
 
-        context.set("foo","bar");
+        context.set("foo", "bar");
         keys = context.keys();
         keys.should.have.length(1);
         keys[0].should.eql("foo");
 
-        context.set("abc.def","bar");
+        context.set("abc.def", "bar");
         keys = context.keys();
         keys.should.have.length(2);
         keys[1].should.eql("abc");

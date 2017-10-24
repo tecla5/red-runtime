@@ -16,7 +16,7 @@
 
 describe('runtime/i18n', function () {
     it('can be required without errors', function () {
-        require('../../../red/runtime/i18n');
+        require('../../src/runtime/i18n');
     });
     it.skip('more tests needed', function () {})
 });

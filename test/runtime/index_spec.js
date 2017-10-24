@@ -18,13 +18,13 @@ var when = require('when');
 var sinon = require('sinon');
 var path = require('path');
 
-var api = require('../../../red/api');
-var runtime = require('../../../red/runtime');
+var api = require('../../src/api');
+var runtime = require('../../src/runtime');
 
-var redNodes = require('../../../red/runtime/nodes');
-var storage = require('../../../red/runtime/storage');
-var settings = require('../../../red/runtime/settings');
-var log = require('../../../red/runtime/log');
+var redNodes = require('../../src/runtime/nodes');
+var storage = require('../../src/runtime/storage');
+var settings = require('../../src/runtime/settings');
+var log = require('../../src/runtime/log');
 
 describe('runtime', function () {
     afterEach(function () {

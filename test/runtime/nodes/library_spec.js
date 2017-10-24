@@ -22,48 +22,60 @@ var should = require("should");
 var fs = require("fs");
 var path = require("path");
 
-var library = require("../../../../red/runtime/nodes/library")
+var library = require("../../../src/runtime/nodes/library")
 
-describe("library api", function() {
-    it('returns null list when no modules have been registered', function() {
-        library.init({events:events});
+describe("library api", function () {
+    it('returns null list when no modules have been registered', function () {
+        library.init({
+            events: events
+        });
         should.not.exist(library.getExampleFlows());
     });
-    it('returns null path when module is not known', function() {
-        library.init({events:events});
-        should.not.exist(library.getExampleFlowPath('foo','bar'));
+    it('returns null path when module is not known', function () {
+        library.init({
+            events: events
+        });
+        should.not.exist(library.getExampleFlowPath('foo', 'bar'));
     });
 
-    it('returns a valid example path', function(done) {
-        library.init({events:events});
-        events.emit('node-examples-dir',{
-            name: "test-module",
-            path: path.resolve(__dirname+'/../../../resources/examples')
+    it('returns a valid example path', function (done) {
+        library.init({
+            events: events
         });
-        setTimeout(function() {
+        events.emit('node-examples-dir', {
+            name: "test-module",
+            path: path.resolve(__dirname + '/../../../resources/examples')
+        });
+        setTimeout(function () {
             try {
                 var flows = library.getExampleFlows();
-                flows.should.deepEqual({"d":{"test-module":{"f":["one"]}}});
+                flows.should.deepEqual({
+                    "d": {
+                        "test-module": {
+                            "f": ["one"]
+                        }
+                    }
+                });
 
-                var examplePath = library.getExampleFlowPath('test-module','one');
-                examplePath.should.eql(path.resolve(__dirname+'/../../../resources/examples/one.json'))
+                var examplePath = library.getExampleFlowPath('test-module', 'one');
+                examplePath.should.eql(path.resolve(__dirname + '/../../../resources/examples/one.json'))
 
 
                 events.emit('node-module-uninstalled', 'test-module');
 
-                setTimeout(function() {
+                setTimeout(function () {
                     try {
                         should.not.exist(library.getExampleFlows());
-                        should.not.exist(library.getExampleFlowPath('test-module','one'));
+                        should.not.exist(library.getExampleFlowPath('test-module', 'one'));
                         done();
-                    } catch(err) {
+                    } catch (err) {
                         done(err);
                     }
-                },20);
-            }catch(err) {
+                }, 20);
+            } catch (err) {
                 done(err);
             }
-        },20);
+        }, 20);
 
     })
 });

@@ -16,7 +16,8 @@
 var should = require('should');
 var sinon = require('sinon');
 var util = require('util');
-var log = require('../../../red/runtime/log');
+var Log = require('../../src/runtime/log');
+var log
 
 describe('runtime/log', function () {
     beforeEach(function () {
@@ -29,7 +30,7 @@ describe('runtime/log', function () {
                 }
             }
         };
-        log.init(settings);
+        log = new Log(settings);
     });
 
     afterEach(function () {
@@ -61,7 +62,7 @@ describe('runtime/log', function () {
         sinon.assert.calledWithMatch(util.log, '[warn] This is a warn');
     });
 
-    it('it can raise a metric', function () {
+    it.only('it can raise a metric', function () {
         var metrics = {};
         metrics.level = log.METRIC;
         metrics.nodeid = 'testid';

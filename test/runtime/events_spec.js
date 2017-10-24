@@ -15,9 +15,11 @@
  **/
 var should = require('should');
 
+require('../../src/runtime/events');
+
 describe('runtime/events', function () {
     it('can be required without errors', function () {
-        require('../../../red/runtime/events');
+
     });
     it.skip('more tests needed', function () {})
 });

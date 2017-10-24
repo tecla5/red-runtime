@@ -20,42 +20,48 @@ var assert = require('assert');
 var log = require('./log');
 var util = require('./util');
 
-var userSettings = null;
-var globalSettings = null;
-var nodeSettings = null;
-var disableNodeSettings = null;
-var storage = null;
-
-module.exports = class Settings {
+class Settings {
     constructor(settings) {
-        userSettings = settings;
+        // var userSettings = null;
+        // var globalSettings = null;
+        // var nodeSettings = null;
+        // var disableNodeSettings = null;
+        // var storage = null;
+
+        this.userSettings = settings;
+        let {
+            persistentSettings
+        } = this
+
         for (var i in settings) {
             /* istanbul ignore else */
             if (settings.hasOwnProperty(i) && i !== 'load' && i !== 'get' && i !== 'set' && i !== 'available' && i !== 'reset') {
                 // Don't allow any of the core functions get replaced via settings
                 (function () {
                     var j = i;
-                    persistentSettings.__defineGetter__(j, function () {
-                        return userSettings[j];
-                    });
-                    persistentSettings.__defineSetter__(j, function () {
-                        throw new Error('Property '
-                            ' + j + '
-                            ' is read-only');
-                    });
+                    if (persistentSettings) {
+                        persistentSettings.__defineGetter__(j, function () {
+                            return userSettings[j];
+                        });
+                        persistentSettings.__defineSetter__(j, function () {
+                            throw new Error(`Property ${j} is read-only`)
+                        });
+                    }
                 })();
             }
         }
-        globalSettings = null;
-        nodeSettings = {};
-        disableNodeSettings = {};
+        this.globalSettings = null;
+        this.nodeSettings = {};
+        this.disableNodeSettings = {};
     }
+
     load(_storage) {
         storage = _storage;
         return storage.getSettings().then(function (_settings) {
             globalSettings = _settings;
         });
     }
+
     get(prop) {
         if (userSettings.hasOwnProperty(prop)) {
             return clone(userSettings[prop]);
@@ -85,6 +91,11 @@ module.exports = class Settings {
         }
     }
     delete(prop) {
+        let {
+            userSettings,
+            globalSettings,
+            storage
+        } = this
         if (userSettings.hasOwnProperty(prop)) {
             throw new Error(log._('settings.property-read-only', {
                 prop: prop
@@ -101,14 +112,21 @@ module.exports = class Settings {
     }
 
     available() {
-        return (globalSettings !== null);
+        return (this.globalSettings !== null);
     }
 
     reset() {
+        let {
+            userSettings,
+            globalSettings,
+            storage
+        } = this
         for (var i in userSettings) {
             /* istanbul ignore else */
             if (userSettings.hasOwnProperty(i)) {
-                delete persistentSettings[i];
+                if (this.persistentSettings[i]) {
+                    delete this.persistentSettings[i];
+                }
             }
         }
         userSettings = null;
@@ -116,21 +134,24 @@ module.exports = class Settings {
         storage = null;
     }
     registerNodeSettings(type, opts) {
+        let {
+            nodeSettings
+        } = this
         var normalisedType = util.normaliseNodeTypeName(type);
         for (var property in opts) {
             if (opts.hasOwnProperty(property)) {
                 if (!property.startsWith(normalisedType)) {
-                    throw new Error('Registered invalid property name '
-                        ' + property + '
-                        '. Properties for this node must start with '
-                        ' + normalisedType + '
-                        '');
+                    throw new Error(`Registered invalid property name ${property}. Properties for this node must start with ${normalisedType}`)
                 }
             }
         }
         nodeSettings[type] = opts;
     }
     exportNodeSettings(safeSettings) {
+        let {
+            nodeSettings
+        } = this
+
         for (var type in nodeSettings) {
             if (nodeSettings.hasOwnProperty(type) && !disableNodeSettings[type]) {
                 var nodeTypeSettings = nodeSettings[type];
@@ -164,3 +185,9 @@ module.exports = class Settings {
         });
     }
 }
+
+Settings.init = function (settings) {
+    return new Settings(settings)
+}
+
+module.exports = Settings
