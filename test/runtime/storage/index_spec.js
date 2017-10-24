@@ -16,7 +16,8 @@
 var when = require('when');
 var should = require('should');
 var paff = require('path');
-var storage = require('../../../src/runtime/storage/index');
+var Storage = require('../../../src/runtime/storage/index');
+var storage
 
 describe('red/storage/index', function () {
 
@@ -28,7 +29,7 @@ describe('red/storage/index', function () {
             }
         };
 
-        storage.init(wrongModule).then(function () {
+        storage = Storage.init(wrongModule).then(function () {
             var one = 1;
             var zero = 0;
             try {
@@ -56,7 +57,7 @@ describe('red/storage/index', function () {
             }
         };
 
-        storage.init(setsBooleanModule);
+        storage = Storage.init(setsBooleanModule);
         initSetsMeToTrue.should.be.true();
         done();
     });
@@ -131,7 +132,7 @@ describe('red/storage/index', function () {
         };
 
         var promises = [];
-        storage.init(moduleToLoad);
+        storage = Storage.init(moduleToLoad);
         promises.push(storage.getFlows());
         promises.push(storage.saveFlows({
             flows: [],
@@ -201,7 +202,7 @@ describe('red/storage/index', function () {
             }
         };
         before(function () {
-            storage.init(moduleToLoad);
+            storage = Storage.init(moduleToLoad);
         });
         it('getAllFlows', function (done) {
             storage.getAllFlows().then(function (res) {
@@ -253,7 +254,7 @@ describe('red/storage/index', function () {
             var interfaceCheckerModule = {
                 init: function () {}
             };
-            storage.init({
+            storage = Storage.init({
                 settings: {
                     storageModule: interfaceCheckerModule
                 }

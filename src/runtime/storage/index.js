@@ -19,17 +19,29 @@ var Path = require('path');
 var crypto = require('crypto');
 var log = require('../log');
 
-module.exports = class StorageModuleInterface {
+class StorageModuleInterface {
     constructor(_runtime) {
-        runtime = _runtime;
+        let runtime = _runtime;
+        this.runtime = runtime
+    }
+
+    configure() {
+        let {
+            runtime
+        } = this
+        let storageModule
         try {
             storageModule = moduleSelector(runtime.settings);
             settingsAvailable = storageModule.hasOwnProperty('getSettings') && storageModule.hasOwnProperty('saveSettings');
             sessionsAvailable = storageModule.hasOwnProperty('getSessions') && storageModule.hasOwnProperty('saveSessions');
         } catch (e) {
-            return when.reject(e);
+            console.log(e)
+            // return when.reject(e);
         }
-        return storageModule.init(runtime.settings);
+        // FIX: WTF!?
+        storageModule = StorageModuleInterface.init(runtime.settings);
+        this.storageModule = storageModule
+        return this.storageModule
     }
 
     moduleSelector(aSettings) {
@@ -53,6 +65,9 @@ module.exports = class StorageModuleInterface {
 
 
     getFlows() {
+        let {
+            storageModule
+        } = this
         return storageModule.getFlows().then(function (flows) {
             return storageModule.getCredentials().then(function (creds) {
                 var result = {
@@ -64,6 +79,7 @@ module.exports = class StorageModuleInterface {
             })
         });
     }
+
     saveFlows(config) {
         var flows = config.flows;
         var credentials = config.credentials;
@@ -94,6 +110,7 @@ module.exports = class StorageModuleInterface {
             return when.resolve(null);
         }
     }
+
     saveSettings(settings) {
         if (settingsAvailable) {
             return storageModule.saveSettings(settings);
@@ -101,6 +118,7 @@ module.exports = class StorageModuleInterface {
             return when.resolve();
         }
     }
+
     getSessions() {
         if (sessionsAvailable) {
             return storageModule.getSessions();
@@ -108,6 +126,7 @@ module.exports = class StorageModuleInterface {
             return when.resolve(null);
         }
     }
+
     saveSessions(sessions) {
         if (sessionsAvailable) {
             return storageModule.saveSessions(sessions);
@@ -117,7 +136,6 @@ module.exports = class StorageModuleInterface {
     }
 
     /* Library Functions */
-
     getLibraryEntry(type, path) {
         if (is_malicious(path)) {
             var err = new Error();
@@ -126,6 +144,7 @@ module.exports = class StorageModuleInterface {
         }
         return storageModule.getLibraryEntry(type, path);
     }
+
     saveLibraryEntry(type, path, meta, body) {
         if (is_malicious(path)) {
             var err = new Error();
@@ -143,6 +162,7 @@ module.exports = class StorageModuleInterface {
             return listFlows('/');
         }
     }
+
     getFlow(fn) {
         if (is_malicious(fn)) {
             var err = new Error();
@@ -156,6 +176,7 @@ module.exports = class StorageModuleInterface {
         }
 
     }
+
     saveFlow(fn, data) {
         if (is_malicious(fn)) {
             var err = new Error();
@@ -168,6 +189,7 @@ module.exports = class StorageModuleInterface {
             return storageModule.saveLibraryEntry('flows', fn, {}, data);
         }
     }
+
     /* End deprecated functions */
 
     listFlows(path) {
@@ -206,3 +228,9 @@ module.exports = class StorageModuleInterface {
         });
     }
 }
+
+StorageModuleInterface.init = function (runtime) {
+    return new StorageModuleInterface(runtime).configure()
+}
+
+module.exports = StorageModuleInterface
