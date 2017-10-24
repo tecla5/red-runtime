@@ -25,13 +25,42 @@ var log = require("../log");
 
 var promiseDir = nodeFn.lift(mkdirp);
 
-module.exports = class LocalFileSystem {
+class LocalFileSystem {
     constructor(_settings) {
         this.settings = _settings;
 
         this.initialFlowLoadComplete = false;
 
         var promises = [];
+    }
+
+    configure() {
+        const {
+            settings
+        } = this
+        let flowsFile,
+            flowsFullPath,
+            credentialsFile,
+            credentialsFileBackup,
+            oldCredentialsFile,
+            flowsFileBackup,
+            sessionsFile,
+            libDir,
+            libFlowsDir,
+            globalSettingsFile,
+            promises = [],
+            writeFile = this.writeFile.bind(this)
+
+        this.flowsFile = flowsFile
+        this.flowsFullPath = flowsFullPath
+        this.credentialsFile = credentialsFile
+        this.credentialsFileBackup = credentialsFileBackup
+        this.oldCredentialsFile = oldCredentialsFile
+        this.flowsFileBackup = flowsFileBackup
+        this.sessionsFile = sessionsFile
+        this.libDir = libDir
+        this.libFlowsDir = libFlowsDir
+        this.globalSettingsFile = globalSettingsFile
 
         if (!settings.userDir) {
             try {
@@ -439,3 +468,10 @@ module.exports = class LocalFileSystem {
         });
     }
 }
+
+LocalFileSystem.init = function (settings) {
+    const lfs = new LocalFileSystem(settings)
+    return lfs.configure()
+}
+
+module.exports = LocalFileSystem

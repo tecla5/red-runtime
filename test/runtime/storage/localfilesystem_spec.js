@@ -18,7 +18,7 @@ var should = require('should');
 var fs = require('fs-extra');
 var path = require('path');
 
-var localfilesystem = require('../../../src/runtime/storage/localfilesystem');
+var LocalFileSystem = require('../../../src/runtime/storage/localfilesystem');
 
 describe('LocalFileSystem', function () {
     var userDir = path.join(__dirname, '.testUserHome');
@@ -37,7 +37,7 @@ describe('LocalFileSystem', function () {
     });
 
     it('should initialise the user directory', function (done) {
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir
         }).then(function () {
             fs.existsSync(path.join(userDir, 'lib')).should.be.true();
@@ -55,7 +55,7 @@ describe('LocalFileSystem', function () {
         fs.mkdirSync(process.env.NODE_RED_HOME);
         fs.writeFileSync(path.join(process.env.NODE_RED_HOME, '.config.json'), '{}', 'utf8');
         var settings = {};
-        localfilesystem.init(settings).then(function () {
+        localfilesystem = LocalFileSystem.init(settings).then(function () {
             try {
                 fs.existsSync(path.join(process.env.NODE_RED_HOME, 'lib')).should.be.true();
                 fs.existsSync(path.join(process.env.NODE_RED_HOME, 'lib', 'flows')).should.be.true();
@@ -80,7 +80,7 @@ describe('LocalFileSystem', function () {
         fs.mkdirSync(path.join(process.env.HOMEPATH, '.node-red'));
         fs.writeFileSync(path.join(process.env.HOMEPATH, '.node-red', '.config.json'), '{}', 'utf8');
         var settings = {};
-        localfilesystem.init(settings).then(function () {
+        localfilesystem = LocalFileSystem.init(settings).then(function () {
             try {
                 fs.existsSync(path.join(process.env.HOMEPATH, '.node-red', 'lib')).should.be.true();
                 fs.existsSync(path.join(process.env.HOMEPATH, '.node-red', 'lib', 'flows')).should.be.true();
@@ -107,7 +107,7 @@ describe('LocalFileSystem', function () {
 
         fs.mkdirSync(process.env.HOME);
         var settings = {};
-        localfilesystem.init(settings).then(function () {
+        localfilesystem = LocalFileSystem.init(settings).then(function () {
             try {
                 fs.existsSync(path.join(process.env.HOME, '.node-red', 'lib')).should.be.true();
                 fs.existsSync(path.join(process.env.HOME, '.node-red', 'lib', 'flows')).should.be.true();
@@ -137,7 +137,7 @@ describe('LocalFileSystem', function () {
 
         fs.mkdirSync(process.env.USERPROFILE);
         var settings = {};
-        localfilesystem.init(settings).then(function () {
+        localfilesystem = LocalFileSystem.init(settings).then(function () {
             try {
                 fs.existsSync(path.join(process.env.USERPROFILE, '.node-red', 'lib')).should.be.true();
                 fs.existsSync(path.join(process.env.USERPROFILE, '.node-red', 'lib', 'flows')).should.be.true();
@@ -157,7 +157,7 @@ describe('LocalFileSystem', function () {
     });
 
     it('should handle missing flow file', function (done) {
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir
         }).then(function () {
             var flowFile = 'flows_' + require('os').hostname() + '.json';
@@ -175,7 +175,7 @@ describe('LocalFileSystem', function () {
     });
 
     it('should handle empty flow file, no backup', function (done) {
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir
         }).then(function () {
             var flowFile = 'flows_' + require('os').hostname() + '.json';
@@ -195,7 +195,7 @@ describe('LocalFileSystem', function () {
     });
 
     it('should handle empty flow file, restores backup', function (done) {
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir
         }).then(function () {
             var flowFile = 'flows_' + require('os').hostname() + '.json';
@@ -220,7 +220,7 @@ describe('LocalFileSystem', function () {
     });
 
     it('should save flows to the default file', function (done) {
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir
         }).then(function () {
             var flowFile = 'flows_' + require('os').hostname() + '.json';
@@ -251,7 +251,7 @@ describe('LocalFileSystem', function () {
         var flowFile = 'test.json';
         var flowFilePath = path.join(userDir, flowFile);
 
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir,
             flowFile: flowFilePath
         }).then(function () {
@@ -278,7 +278,7 @@ describe('LocalFileSystem', function () {
     it('should format the flows file when flowFilePretty specified', function (done) {
         var flowFile = 'test.json';
         var flowFilePath = path.join(userDir, flowFile);
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir,
             flowFile: flowFilePath,
             flowFilePretty: true
@@ -307,7 +307,7 @@ describe('LocalFileSystem', function () {
         var flowFilePath = path.join(userDir, flowFile);
         var flowFileBackupPath = path.join(userDir, '.' + flowFile + '.backup');
 
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir,
             flowFile: flowFilePath
         }).then(function () {
@@ -354,7 +354,7 @@ describe('LocalFileSystem', function () {
         var flowFile = 'test.json';
         var flowFilePath = path.join(userDir, flowFile);
         var credFile = path.join(userDir, 'test_cred.json');
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir,
             flowFile: flowFilePath
         }).then(function () {
@@ -376,7 +376,7 @@ describe('LocalFileSystem', function () {
         var flowFilePath = path.join(userDir, flowFile);
         var credFile = path.join(userDir, 'test_cred.json');
 
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir,
             flowFile: flowFilePath
         }).then(function () {
@@ -412,7 +412,7 @@ describe('LocalFileSystem', function () {
         var credFile = path.join(userDir, 'test_cred.json');
         var credFileBackup = path.join(userDir, '.test_cred.json.backup');
 
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir,
             flowFile: flowFilePath
         }).then(function () {
@@ -446,7 +446,7 @@ describe('LocalFileSystem', function () {
         var flowFilePath = path.join(userDir, flowFile);
         var credFile = path.join(userDir, 'test_cred.json');
 
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir,
             flowFile: flowFilePath,
             flowFilePretty: true
@@ -481,7 +481,7 @@ describe('LocalFileSystem', function () {
     it('should handle non-existent settings', function (done) {
         var settingsFile = path.join(userDir, '.settings.json');
 
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir
         }).then(function () {
             fs.existsSync(settingsFile).should.be.false();
@@ -499,7 +499,7 @@ describe('LocalFileSystem', function () {
     it('should handle corrupt settings', function (done) {
         var settingsFile = path.join(userDir, '.config.json');
         fs.writeFileSync(settingsFile, '[This is not json', 'utf8');
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir
         }).then(function () {
             fs.existsSync(settingsFile).should.be.true();
@@ -517,7 +517,7 @@ describe('LocalFileSystem', function () {
     it('should handle settings', function (done) {
         var settingsFile = path.join(userDir, '.config.json');
 
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir
         }).then(function () {
             fs.existsSync(settingsFile).should.be.false();
@@ -547,7 +547,7 @@ describe('LocalFileSystem', function () {
     it('should handle non-existent sessions', function (done) {
         var sessionsFile = path.join(userDir, '.sessions.json');
 
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir
         }).then(function () {
             fs.existsSync(sessionsFile).should.be.false();
@@ -565,7 +565,7 @@ describe('LocalFileSystem', function () {
     it('should handle corrupt sessions', function (done) {
         var sessionsFile = path.join(userDir, '.sessions.json');
         fs.writeFileSync(sessionsFile, '[This is not json', 'utf8');
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir
         }).then(function () {
             fs.existsSync(sessionsFile).should.be.true();
@@ -583,7 +583,7 @@ describe('LocalFileSystem', function () {
     it('should handle sessions', function (done) {
         var sessionsFile = path.join(userDir, '.sessions.json');
 
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir
         }).then(function () {
             fs.existsSync(sessionsFile).should.be.false();
@@ -612,7 +612,7 @@ describe('LocalFileSystem', function () {
 
 
     it('should return an empty list of library objects', function (done) {
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir
         }).then(function () {
             localfilesystem.getLibraryEntry('object', '').then(function (flows) {
@@ -627,7 +627,7 @@ describe('LocalFileSystem', function () {
     });
 
     it('should return an empty list of library objects (path=/)', function (done) {
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir
         }).then(function () {
             localfilesystem.getLibraryEntry('object', '/').then(function (flows) {
@@ -642,7 +642,7 @@ describe('LocalFileSystem', function () {
     });
 
     it('should return an error for a non-existent library object', function (done) {
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir
         }).then(function () {
             localfilesystem.getLibraryEntry('object', 'A/B').then(function (flows) {
@@ -675,7 +675,7 @@ describe('LocalFileSystem', function () {
     }
 
     it('should return a directory listing of library objects', function (done) {
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir
         }).then(function () {
             createObjectLibrary();
@@ -710,7 +710,7 @@ describe('LocalFileSystem', function () {
     });
 
     it('should load a flow library object with .json unspecified', function (done) {
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir
         }).then(function () {
             createObjectLibrary('flows');
@@ -725,7 +725,7 @@ describe('LocalFileSystem', function () {
     });
 
     it('should return a library object', function (done) {
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir
         }).then(function () {
             createObjectLibrary();
@@ -741,7 +741,7 @@ describe('LocalFileSystem', function () {
     });
 
     it('should return a newly saved library function', function (done) {
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir
         }).then(function () {
             createObjectLibrary('functions');
@@ -782,7 +782,7 @@ describe('LocalFileSystem', function () {
     });
 
     it('should return a newly saved library flow', function (done) {
-        localfilesystem.init({
+        localfilesystem = LocalFileSystem.init({
             userDir: userDir
         }).then(function () {
             createObjectLibrary('flows');
