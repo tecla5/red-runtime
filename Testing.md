@@ -42,7 +42,7 @@ if (fs.existsSync(path.join(process.env.NODE_RED_HOME, '.config.json'))) {
     settingsFile = path.join(process.env.HOMEPATH, '.node-red', 'settings.js');
 ```
 
-Error: `Cannot find module './api'`
+Error: `Cannot find module 'red-api'`
 
 We need to update [red-api](https://github.com/tecla5/red-api) to pass all tests, then install it via `npm link`, then import it.
 

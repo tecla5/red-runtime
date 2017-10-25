@@ -24,6 +24,7 @@
   "author": "Kristian Mandrup",
   "license": "ISC",
   "dependencies": {
+    "red-api": "github:tecla5/red-api",
     "basic-auth": "1.1.0",
     "bcryptjs": "2.4.3",
     "body-parser": "1.17.2",
