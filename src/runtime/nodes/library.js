@@ -18,6 +18,9 @@ var fs = require('fs');
 var fspath = require('path');
 var when = require('when');
 
+const {
+    log
+} = console
 class Library {
     constructor(_runtime) {
         this.runtime = _runtime;
@@ -25,18 +28,25 @@ class Library {
         this.exampleFlows = null;
 
         var events = this.runtime.events
-        events.removeListener('node-examples-dir', this.addNodeExamplesDir);
-        events.on('node-examples-dir', this.addNodeExamplesDir);
-        events.removeListener('node-module-uninstalled', this.removeNodeExamplesDir);
-        events.on('node-module-uninstalled', this.removeNodeExamplesDir);
+        this.events = events
+
+        // important: .bind(this)
+        events.removeListener('node-examples-dir', this.addNodeExamplesDir.bind(this));
+        events.on('node-examples-dir', this.addNodeExamplesDir.bind(this));
+        events.removeListener('node-module-uninstalled', this.removeNodeExamplesDir.bind(this));
+        events.on('node-module-uninstalled', this.removeNodeExamplesDir.bind(this));
     }
 
     getFlowsFromPath(path) {
-        return when.promise(function (resolve, reject) {
+        return when.promise((resolve, reject) => {
             var result = {};
-            fs.readdir(path, function (err, files) {
+            fs.readdir(path, (err, files) => {
                 var promises = [];
                 var validFiles = [];
+                if (!files) {
+                    throw `No files found in ${path}`
+                }
+
                 files.forEach(function (file) {
                     var fullPath = fspath.join(path, file);
                     var stats = fs.lstatSync(fullPath);
@@ -68,6 +78,10 @@ class Library {
     }
 
     addNodeExamplesDir(module) {
+        let {
+            exampleFlows,
+            exampleRoots
+        } = this
         exampleRoots[module.name] = module.path;
         this.getFlowsFromPath(module.path).then(function (result) {
             exampleFlows = exampleFlows || {
@@ -78,6 +92,10 @@ class Library {
     }
 
     removeNodeExamplesDir(module) {
+        let {
+            exampleFlows,
+            exampleRoots
+        } = this
         delete exampleRoots[module];
         if (exampleFlows && exampleFlows.d) {
             delete exampleFlows.d[module];
@@ -89,10 +107,18 @@ class Library {
 
 
     getExampleFlows() {
+        let {
+            exampleFlows
+        } = this
+
         return exampleFlows;
     }
 
     getExampleFlowPath(module, path) {
+        let {
+            exampleRoots
+        } = this
+
         if (exampleRoots[module]) {
             return fspath.join(exampleRoots[module], path) + '.json';
         }

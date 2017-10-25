@@ -19,10 +19,11 @@ var sinon = require("sinon");
 var when = require("when");
 var util = require("util");
 
-var index = require("../../../src/runtime/nodes/index");
-var credentials = require("../../../src/runtime/nodes/credentials");
-var log = require("../../../src/runtime/log");
+var Index = require("../../../src/runtime/nodes/index");
+var Credentials = require("../../../src/runtime/nodes/credentials");
+var Log = require("../../../src/runtime/log");
 
+let credentials, log
 
 describe('red/runtime/nodes/credentials', function () {
 
@@ -32,12 +33,19 @@ describe('red/runtime/nodes/credentials', function () {
         }
     }
 
+    before(x => {
+        var logSettings = {
+            verbose: false
+        }
+        log = Log.init(logSettings)
+    })
+
     afterEach(function () {
         index.clearRegistry();
     });
 
     it('loads provided credentials', function (done) {
-        credentials.init({
+        credentials = Credentials.init({
             log: log,
             settings: encryptionDisabledSettings
         });
@@ -56,7 +64,7 @@ describe('red/runtime/nodes/credentials', function () {
         });
     });
     it('adds a new credential', function (done) {
-        credentials.init({
+        credentials = Credentials.init({
             log: log,
             settings: encryptionDisabledSettings
         });
@@ -78,7 +86,7 @@ describe('red/runtime/nodes/credentials', function () {
         });
     });
     it('deletes an existing credential', function (done) {
-        credentials.init({
+        credentials = Credentials.init({
             log: log,
             settings: encryptionDisabledSettings
         });
@@ -97,7 +105,7 @@ describe('red/runtime/nodes/credentials', function () {
     });
 
     it('exports the credentials, clearing dirty flag', function (done) {
-        credentials.init({
+        credentials = Credentials.init({
             log: log,
             settings: encryptionDisabledSettings
         });
@@ -123,7 +131,7 @@ describe('red/runtime/nodes/credentials', function () {
 
     describe("#clean", function () {
         it("removes credentials of unknown nodes", function (done) {
-            credentials.init({
+            credentials = Credentials.init({
                 log: log,
                 settings: encryptionDisabledSettings
             });
@@ -151,7 +159,7 @@ describe('red/runtime/nodes/credentials', function () {
             });
         });
         it("extracts credentials of known nodes", function (done) {
-            credentials.init({
+            credentials = Credentials.init({
                 log: log,
                 settings: encryptionDisabledSettings
             });
@@ -189,7 +197,7 @@ describe('red/runtime/nodes/credentials', function () {
     });
 
     it('warns if a node has no credential definition', function (done) {
-        credentials.init({
+        credentials = Credentials.init({
             log: log,
             settings: encryptionDisabledSettings
         });
@@ -212,7 +220,7 @@ describe('red/runtime/nodes/credentials', function () {
     })
 
     it('extract credential updates in the provided node', function (done) {
-        credentials.init({
+        credentials = Credentials.init({
             log: log,
             settings: encryptionDisabledSettings
         });
@@ -281,7 +289,7 @@ describe('red/runtime/nodes/credentials', function () {
         });
     });
     it('extract ignores node without credentials', function (done) {
-        credentials.init({
+        credentials = Credentials.init({
             log: log,
             settings: encryptionDisabledSettings
         });
@@ -323,7 +331,7 @@ describe('red/runtime/nodes/credentials', function () {
         }
         it('migrates to encrypted and generates default key', function (done) {
             settings = {};
-            credentials.init(runtime);
+            credentials = Credentials.init(runtime);
             credentials.load({
                 "node": {
                     user1: "abc",
@@ -336,7 +344,7 @@ describe('red/runtime/nodes/credentials', function () {
                 credentials.export().then(function (result) {
                     result.should.have.a.property("$");
                     // reset everything - but with _credentialSecret still set
-                    credentials.init(runtime);
+                    credentials = Credentials.init(runtime);
                     // load the freshly encrypted version
                     credentials.load(result).then(function () {
                         should.exist(credentials.get("node"));
@@ -353,7 +361,7 @@ describe('red/runtime/nodes/credentials', function () {
             var cryptedFlows = {
                 "$": "5b89d8209b5158a3c313675561b1a5b5phN1gDBe81Zv98KqS/hVDmc9EKvaKqRIvcyXYvBlFNzzzJtvN7qfw06i"
             };
-            credentials.init(runtime);
+            credentials = Credentials.init(runtime);
             credentials.load(cryptedFlows).then(function () {
                 should.exist(credentials.get("node"));
                 credentials.dirty().should.be.false();
@@ -364,7 +372,7 @@ describe('red/runtime/nodes/credentials', function () {
                 credentials.export().then(function (result) {
                     result.should.have.a.property("$");
                     // reset everything - but with _credentialSecret still set
-                    credentials.init(runtime);
+                    credentials = Credentials.init(runtime);
                     // load the freshly encrypted version
                     credentials.load(result).then(function () {
                         should.exist(credentials.get("node"));
@@ -383,7 +391,7 @@ describe('red/runtime/nodes/credentials', function () {
             var cryptedFlows = {
                 "$": "5b89d8209b5158a3c313675561b1a5b5phN1gDBe81Zv98KqS/hVDmc9EKvaKqRIvcyXYvBlFNzzzJtvN7qfw06i"
             };
-            credentials.init(runtime);
+            credentials = Credentials.init(runtime);
             credentials.load(cryptedFlows).then(function () {
                 credentials.dirty().should.be.false();
                 should.exist(credentials.get("node"));
@@ -395,7 +403,7 @@ describe('red/runtime/nodes/credentials', function () {
                     result.should.have.a.property("$");
 
                     // reset everything - but with _credentialSecret still set
-                    credentials.init(runtime);
+                    credentials = Credentials.init(runtime);
                     // load the freshly encrypted version
                     credentials.load(result).then(function () {
                         should.exist(credentials.get("node"));
@@ -425,7 +433,7 @@ describe('red/runtime/nodes/credentials', function () {
             var cryptedFlows = {
                 "$": "5b89d8209b5158a3c313675561b1a5b5phN1gDBe81Zv98KqS/hVDmc9EKvaKqRIvcyXYvBlFNzzzJtvN7qfw06i"
             };
-            credentials.init(runtime);
+            credentials = Credentials.init(runtime);
             credentials.load(cryptedFlows).then(function () {
                 should.exist(credentials.get("node"));
                 credentials.add("node", {
@@ -436,7 +444,7 @@ describe('red/runtime/nodes/credentials', function () {
                     result.should.have.a.property("$");
 
                     // reset everything - but with _credentialSecret still set
-                    credentials.init(runtime);
+                    credentials = Credentials.init(runtime);
                     // load the freshly encrypted version
                     credentials.load(result).then(function () {
                         should.exist(credentials.get("node"));
@@ -456,7 +464,7 @@ describe('red/runtime/nodes/credentials', function () {
             var cryptedFlows = {
                 "$": "5b89d8209b5158a3c313675561b1a5b5phN1gDBe81Zv98KqS/hVDmc9EKvaKqRIvcyXYvBlFNzzzJtvN7qfw06i"
             };
-            credentials.init(runtime);
+            credentials = Credentials.init(runtime);
             credentials.load(cryptedFlows).then(function () {
                 credentials.dirty().should.be.true();
                 should.exist(credentials.get("node"));
@@ -465,7 +473,7 @@ describe('red/runtime/nodes/credentials', function () {
                     settings.should.not.have.a.property("_credentialSecret");
 
                     // reset everything - but with _credentialSecret still set
-                    credentials.init(runtime);
+                    credentials = Credentials.init(runtime);
                     // load the freshly encrypted version
                     credentials.load(result).then(function () {
                         should.exist(credentials.get("node"));
@@ -489,7 +497,7 @@ describe('red/runtime/nodes/credentials', function () {
                     password1: "123"
                 }
             };
-            credentials.init(runtime);
+            credentials = Credentials.init(runtime);
             credentials.load(unencryptedFlows).then(function () {
                 credentials.dirty().should.be.true();
                 should.exist(credentials.get("node"));
@@ -498,7 +506,7 @@ describe('red/runtime/nodes/credentials', function () {
                     settings.should.not.have.a.property("_credentialSecret");
 
                     // reset everything - but with _credentialSecret still set
-                    credentials.init(runtime);
+                    credentials = Credentials.init(runtime);
                     // load the freshly encrypted version
                     credentials.load(result).then(function () {
                         should.exist(credentials.get("node"));
@@ -519,7 +527,7 @@ describe('red/runtime/nodes/credentials', function () {
             var cryptedFlows = {
                 "$": "5b89d8209b5158a3c313675561b1a5b5phN1gDBe81Zv98KqS/hVDmc9EKvaKqRIvcyXYvBlFNzzzJtvN7qfw06i"
             };
-            credentials.init(runtime);
+            credentials = Credentials.init(runtime);
             credentials.load(cryptedFlows).then(function () {
                 credentials.dirty().should.be.true();
                 should.exist(credentials.get("node"));
@@ -544,7 +552,7 @@ describe('red/runtime/nodes/credentials', function () {
             var cryptedFlows = {
                 "$": "5b89d8209b5158a3c313675561b1a5b5phN1gDBe81Zv98KqS/hVDmc9EKvaKqRIvcyXYvBlFNzzzJtvN7qfw06i"
             };
-            credentials.init(runtime);
+            credentials = Credentials.init(runtime);
             credentials.load(cryptedFlows).then(function () {
                 credentials.dirty().should.be.true();
                 should.not.exist(credentials.get("node"));
@@ -559,7 +567,7 @@ describe('red/runtime/nodes/credentials', function () {
             var cryptedFlows = {
                 "$": "5b89d8209b5158a3c313675561b1a5b5phN1gDBe81Zv98KqS/hVDmc9EKvaKqRIvcyXYvBlFNzzzJtvN7qfw06i"
             };
-            credentials.init(runtime);
+            credentials = Credentials.init(runtime);
             credentials.load(cryptedFlows).then(function () {
                 credentials.dirty().should.be.true();
                 should.not.exist(credentials.get("node"));
@@ -580,7 +588,7 @@ describe('red/runtime/nodes/credentials', function () {
                 }
             }
             // {"node":{user1:"abc",password1:"123"}}
-            credentials.init(runtime);
+            credentials = Credentials.init(runtime);
             credentials.load({
                 "node": {
                     user1: "abc",

@@ -22,43 +22,56 @@ var should = require("should");
 var fs = require("fs");
 var path = require("path");
 
-var library = require("../../../src/runtime/nodes/library")
+var Library = require("../../../src/runtime/nodes/library")
+let library
+
+const {
+    log
+} = console
+
+const basePath = __dirname + '/../../../test/'
 
 describe("library api", function () {
     it('returns null list when no modules have been registered', function () {
-        library.init({
+        library = Library.init({
             events: events
         });
         should.not.exist(library.getExampleFlows());
     });
     it('returns null path when module is not known', function () {
-        library.init({
+        library = Library.init({
             events: events
         });
         should.not.exist(library.getExampleFlowPath('foo', 'bar'));
     });
 
     it('returns a valid example path', function (done) {
-        library.init({
+        library = Library.init({
             events: events
         });
         events.emit('node-examples-dir', {
             name: "test-module",
-            path: path.resolve(__dirname + '/../../../resources/examples')
+            path: path.resolve(basePath + 'resources/examples')
         });
         setTimeout(function () {
             try {
-                var flows = library.getExampleFlows();
-                flows.should.deepEqual({
+                var expectedFlow = {
                     "d": {
                         "test-module": {
                             "f": ["one"]
                         }
                     }
-                });
+                }
+
+                var flows = library.getExampleFlows();
+                log('example flows', {
+                    flows
+                })
+                should.deepEqual(flows, expectedFlow, 'example flows not found')
+                // flows.should.deepEqual(expectedFlow);
 
                 var examplePath = library.getExampleFlowPath('test-module', 'one');
-                examplePath.should.eql(path.resolve(__dirname + '/../../../resources/examples/one.json'))
+                examplePath.should.eql(path.resolve(basePath + 'resources/examples/one.json'))
 
 
                 events.emit('node-module-uninstalled', 'test-module');

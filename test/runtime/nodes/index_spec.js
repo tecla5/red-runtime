@@ -20,9 +20,10 @@ var path = require('path');
 var when = require("when");
 var sinon = require('sinon');
 
-var index = require("../../../src/runtime/nodes/index");
-var flows = require("../../../src/runtime/nodes/flows");
-var registry = require("../../../src/runtime/nodes/registry");
+var Index = require("../../../src/runtime/nodes/index");
+var Flows = require("../../../src/runtime/nodes/flows");
+var Registry = require("../../../src/runtime/nodes/registry");
+let index, registry, flows
 
 describe("red/nodes/index", function () {
     before(function () {
@@ -94,7 +95,7 @@ describe("red/nodes/index", function () {
     }
 
     it('nodes are initialised with credentials', function (done) {
-        index.init(runtime);
+        index = Index.init(runtime);
         index.registerType('test-node-set', 'test', TestNode);
         index.loadFlows().then(function () {
             var testnode = new TestNode({
@@ -112,7 +113,7 @@ describe("red/nodes/index", function () {
     });
 
     it('flows should be initialised', function (done) {
-        index.init(runtime);
+        index = Index.init(runtime);
         index.loadFlows().then(function () {
             // console.log(testFlows);
             // console.log(index.getFlows());
@@ -141,7 +142,7 @@ describe("red/nodes/index", function () {
                     },
                     events: new EventEmitter()
                 }
-                index.init(runtime);
+                index = Index.init(runtime);
 
                 index.registerType( /*'test-node-set',*/ 'test', TestNode, {});
                 runtime.log.warn.called.should.be.true();
@@ -241,7 +242,7 @@ describe("red/nodes/index", function () {
                     events: new EventEmitter()
                 }
                 runtime.settings.registerNodeSettings = sinon.spy();
-                index.init(runtime);
+                index = Index.init(runtime);
 
                 index.registerType('test-node-set', 'test', TestNode, {
                     settings: {
@@ -267,7 +268,7 @@ describe("red/nodes/index", function () {
                 runtime.settings.registerNodeSettings = function () {
                     throw new Error("pass");
                 }
-                index.init(runtime);
+                index = Index.init(runtime);
 
                 index.registerType('test-node-set', 'test', TestNode, {
                     settings: {
@@ -308,7 +309,7 @@ describe("red/nodes/index", function () {
         });
 
         it('allows an unused node type to be disabled', function (done) {
-            index.init(runtime);
+            index = Index.init(runtime);
             index.registerType('test-node-set', 'test', TestNode);
             index.loadFlows().then(function () {
                 var info = index.disableNode("5678");
@@ -322,7 +323,7 @@ describe("red/nodes/index", function () {
         });
 
         it('prevents disabling a node type that is in use', function (done) {
-            index.init(runtime);
+            index = Index.init(runtime);
             index.registerType('test-node-set', 'test', TestNode);
             index.loadFlows().then(function () {
                 /*jshint immed: false */
@@ -337,7 +338,7 @@ describe("red/nodes/index", function () {
         });
 
         it('prevents disabling a node type that is unknown', function (done) {
-            index.init(runtime);
+            index = Index.init(runtime);
             index.registerType('test-node-set', 'test', TestNode);
             index.loadFlows().then(function () {
                 /*jshint immed: false */
@@ -400,7 +401,7 @@ describe("red/nodes/index", function () {
         });
 
         it('prevents removing a module that is in use', function (done) {
-            index.init(runtime);
+            index = Index.init(runtime);
             index.registerType('test-node-set', 'test', TestNode);
             index.loadFlows().then(function () {
                 /*jshint immed: false */
@@ -415,7 +416,7 @@ describe("red/nodes/index", function () {
         });
 
         it('prevents removing a module that is unknown', function (done) {
-            index.init(runtime);
+            index = Index.init(runtime);
             index.registerType('test-node-set', 'test', TestNode);
             index.loadFlows().then(function () {
                 /*jshint immed: false */

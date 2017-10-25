@@ -49,6 +49,7 @@ function checkBuild() {
     }
 }
 
+// Note: this initialized the global RED object (I believe...)
 module.exports = {
     init: function (httpServer, userSettings) {
         if (!userSettings) {

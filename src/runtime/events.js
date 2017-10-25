@@ -16,4 +16,7 @@
 
 var events = require('events');
 
-module.exports = new events.EventEmitter();
+module.exports = {
+  EventEmitter: events.EventEmitter,
+  events: new events.EventEmitter()
+};

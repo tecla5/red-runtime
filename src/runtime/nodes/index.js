@@ -20,12 +20,12 @@ var fs = require('fs');
 var clone = require('clone');
 
 var registry = require('./registry');
-var credentials = require('./credentials');
-var flows = require('./flows');
-var flowUtil = require('./flows/util')
-var context = require('./context');
+var Credentials = require('./credentials');
+var Flows = require('./flows');
+var FlowUtil = require('./flows/util')
+var Context = require('./context');
 var Node = require('./Node');
-var library = require('./library');
+var Library = require('./library');
 var events = require('../events');
 
 class Nodes {
@@ -166,13 +166,7 @@ class Nodes {
     }
 };
 
-const flow = require('./flow')
-const {
-    Flow
-} = flow
-
-
-const registry = require('./registry')
+const Flow = require('./flows/flow/flow')
 const {
     RegistryFactory,
     Installer,

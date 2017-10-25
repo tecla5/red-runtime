@@ -15,7 +15,10 @@
  **/
 
 var util = require('util');
-var EventEmitter = require('events').EventEmitter;
+var {
+    EventEmitter,
+    events
+} = require('events')
 var when = require('when');
 
 var redUtil = require('../util');
@@ -108,13 +111,7 @@ class Node extends EventEmitter {
 
     // attempt at fix
     _on(event, callback) {
-        let {
-            emmitter
-        } = this
-        if (!emmitter) {
-            throw 'Node needs to have an EventEmitter instance: emmitter'
-        }
-        emmitter.addListener(event, callback)
+        events.addListener(event, callback)
     }
 
     close(removed) {

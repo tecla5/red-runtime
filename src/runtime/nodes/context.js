@@ -39,7 +39,12 @@ class Context {
         return obj;
     }
 
-    getContext(localId, flowId) {
+    get(localId, flowId) {
+        let {
+            contexts,
+            globalContext
+        } = this
+
         var contextId = localId;
         if (flowId) {
             contextId = localId + ':' + flowId;
@@ -49,7 +54,7 @@ class Context {
         }
         var newContext = this.createContext(contextId);
         if (flowId) {
-            newContext.flow = this.getContext(flowId);
+            newContext.flow = this.get(flowId);
         }
         if (globalContext) {
             newContext.global = globalContext;
@@ -59,6 +64,10 @@ class Context {
     }
 
     delete(id, flowId) {
+        let {
+            contexts
+        } = this
+
         var contextId = id;
         if (flowId) {
             contextId = id + ':' + flowId;
@@ -67,6 +76,9 @@ class Context {
     }
 
     clean(flowConfig) {
+        let {
+            contexts
+        } = this
         var activeIds = {};
         var contextId;
         var node;

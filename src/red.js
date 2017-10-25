@@ -30,8 +30,14 @@ var nopt = require('nopt');
 var path = require('path');
 var fs = require('fs-extra');
 
+// TODO: Fix - see how configured in original node-red project
+process.env.NODE_RED_HOME = path.join(__dirname, '../')
+process.env.HOMEPATH = path.join(__dirname, '../')
+process.env.HOME = path.join(__dirname, '../home')
+process.env.USERPROFILE = path.join(__dirname, '../userprofile')
+
 // TODO: FIX - look at node-red!
-var RED = require('./red/red.js');
+var RED = require('./new');
 
 var server;
 var app = express();
