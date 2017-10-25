@@ -21,7 +21,7 @@ var semver = require('semver');
 var localfilesystem = require('./localfilesystem');
 var registry = require('./registry');
 
-module.exports = class Loader {
+class Loader {
     constructor(_runtime) {
         runtime = _runtime;
         settings = runtime.settings;
@@ -400,3 +400,9 @@ module.exports = class Loader {
         return node.help[lang];
     }
 }
+
+Loader.init = function (runtime) {
+    return new Loader(runtime)
+}
+
+module.exports = Loader

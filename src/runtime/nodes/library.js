@@ -18,7 +18,7 @@ var fs = require('fs');
 var fspath = require('path');
 var when = require('when');
 
-module.exports = class Library {
+class Library {
     constructor(_runtime) {
         this.runtime = _runtime;
         this.exampleRoots = {};
@@ -99,3 +99,9 @@ module.exports = class Library {
         return null;
     }
 }
+
+Library.init = function (runtime) {
+    return new Library(runtime)
+}
+
+module.exports = Library

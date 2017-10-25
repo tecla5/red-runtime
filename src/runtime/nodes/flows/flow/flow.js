@@ -1,4 +1,4 @@
-module.exports = class Flow {
+class Flow {
   constructor(global, flow) {
     if (typeof flow === 'undefined') {
       flow = global;
@@ -299,3 +299,9 @@ function createNode(type, config) {
   }
   return nn;
 }
+
+Flow.init = function (global, flow) {
+  return new Flow(global, flow)
+}
+
+module.exports = Flow

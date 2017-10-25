@@ -28,7 +28,7 @@ var npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 var moduleRe = /^[^/]+$/;
 var slashRe = process.platform === 'win32' ? /\\|[/]/ : /[/]/;
 
-module.exports = class Installer {
+class Installer {
     constructor(_settings) {
         this.settings = _settings;
         this.paletteEditorEnabled = false;
@@ -267,3 +267,9 @@ module.exports = class Installer {
         }
     }
 }
+
+Installer.init = function (settings) {
+    return new Installer(settings)
+}
+
+module.exports = Installer

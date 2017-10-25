@@ -27,12 +27,13 @@ class FlowFactory {
     constructor(settings) {
         this.nodeCloseTimeout = settings.nodeCloseTimeout || 15000;
     }
-
-    create(global, conf) {
-        return new Flow(global, conf);
-    }
 }
 
+FlowFactory.create = function (global, conf) {
+    return new FlowFactory(global, conf);
+}
+FlowFactory.init = FlowFactory.create
+
 module.exports = {
-    Flow
+    FlowFactory
 }

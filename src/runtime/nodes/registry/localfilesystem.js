@@ -18,7 +18,7 @@ var when = require('when');
 var fs = require('fs');
 var path = require('path');
 
-module.exports = class LocalFileSystem {
+class LocalFileSystem {
     constructor(runtime = {}) {
         this.disableNodePathScan = false;
         this.settings = runtime.settings;
@@ -313,3 +313,9 @@ module.exports = class LocalFileSystem {
     }
 
 }
+
+LocalFileSystem.init = function (runtime) {
+    return new LocalFileSystem(runtime)
+}
+
+module.exports = LocalFileSystem

@@ -17,7 +17,7 @@
 var fs = require('fs');
 var path = require('path');
 
-var runtime = require('./runtime');
+var runtime = require('../runtime');
 var api = require('./api');
 
 process.env.NODE_RED_HOME = process.env.NODE_RED_HOME || path.resolve(__dirname + '/..');

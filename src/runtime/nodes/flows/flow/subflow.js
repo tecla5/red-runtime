@@ -1,4 +1,4 @@
-module.exports = class SubFlow {
+class SubFlow {
   constructor(sf, sfn, subflows, globalSubflows, activeNodes) {
     //console.log('CREATE SUBFLOW',sf.id,sfn.id);
     var nodes = [];
@@ -135,3 +135,9 @@ module.exports = class SubFlow {
     newNodes.push(node);
   }
 }
+
+SubFlow.init = function (flow) {
+  return new SubFlow(flow);
+}
+
+module.exports = SubFlow

@@ -20,7 +20,8 @@ var typeRegistry = require('../registry');
 
 var EnvVarPropertyRE = /^\$\((\S+)\)$/;
 
-module.exports = class Util {
+class Util {
+    constructor() {}
 
     diffNodes(oldNode, newNode) {
         if (oldNode == null) {
@@ -451,3 +452,9 @@ module.exports = class Util {
         return diff;
     }
 }
+
+Util.init = function (config) {
+    return new Util(config)
+}
+
+module.exports = Util

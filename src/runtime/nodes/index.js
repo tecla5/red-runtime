@@ -181,6 +181,10 @@ const {
     LocalFilesystem
 } = registry
 
+Nodes.init = function (runtime) {
+    return new Nodes(runtime)
+}
+
 module.exports = {
     Nodes,
     Credentials,

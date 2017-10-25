@@ -36,7 +36,7 @@ function log_helper(self, level, msg) {
     Log.log(o);
 }
 
-module.exports = class Node extends EventEmitter {
+class Node extends EventEmitter {
     constructor(n) {
         super(n)
 
@@ -84,13 +84,37 @@ module.exports = class Node extends EventEmitter {
         return this._context;
     }
 
+    // TODO: How to simulate this legacy code correctly??
+    // Should use EventEmitter!?
+    //---------------------------------------------------
+    // Node.prototype._on = Node.prototype.on;
+    // Node.prototype.on = function(event, callback) {
+    //     var node = this;
+    //     if (event == "close") {
+    //         this._closeCallbacks.push(callback);
+    //     } else {
+    //         this._on(event, callback);
+    //     }
+    // };
     on(event, callback) {
         var node = this;
         if (event == 'close') {
             this._closeCallbacks.push(callback);
         } else {
-            this.on(event, callback);
+            // TODO: fix recurssion
+            this._on(event, callback);
         }
+    }
+
+    // attempt at fix
+    _on(event, callback) {
+        let {
+            emmitter
+        } = this
+        if (!emmitter) {
+            throw 'Node needs to have an EventEmitter instance: emmitter'
+        }
+        emmitter.addListener(event, callback)
     }
 
     close(removed) {
@@ -101,7 +125,7 @@ module.exports = class Node extends EventEmitter {
             var callback = this._closeCallbacks[i];
             if (callback.length > 0) {
                 promises.push(
-                    when.promise(function (resolve) {
+                    when.promise((resolve) => {
                         var args = [];
                         if (callback.length === 2) {
                             args.push(!!removed);
@@ -115,7 +139,7 @@ module.exports = class Node extends EventEmitter {
             }
         }
         if (promises.length > 0) {
-            return when.settle(promises).then(function () {
+            return when.settle(promises).then(() => {
                 if (this._context) {
                     context.delete(this._alias || this.id, this.z);
                 }
@@ -290,3 +314,9 @@ module.exports = class Node extends EventEmitter {
         flows.handleStatus(this, status);
     }
 }
+
+Node.init = function (n) {
+    return new Node(n)
+}
+
+module.exports = Node

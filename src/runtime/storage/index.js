@@ -19,32 +19,39 @@ var Path = require('path');
 var crypto = require('crypto');
 var log = require('../log');
 
+const _log = console.log
 class StorageModuleInterface {
-    constructor(_runtime) {
+    constructor(_runtime = {}) {
         let runtime = _runtime;
         this.runtime = runtime
+        this.settings = runtime.settings
     }
 
-    configure() {
+    configure(recurse) {
         let {
-            runtime
+            runtime,
+            settings
         } = this
-        let storageModule
+        let storageModule, settingsAvailable, sessionsAvailable
         try {
-            storageModule = moduleSelector(runtime.settings);
+            storageModule = this.moduleSelector(runtime.settings);
             settingsAvailable = storageModule.hasOwnProperty('getSettings') && storageModule.hasOwnProperty('saveSettings');
             sessionsAvailable = storageModule.hasOwnProperty('getSessions') && storageModule.hasOwnProperty('saveSessions');
         } catch (e) {
             console.log(e)
-            // return when.reject(e);
+            return when.reject(e);
         }
-        // FIX: WTF!?
-        storageModule = StorageModuleInterface.init(runtime.settings);
-        this.storageModule = storageModule
-        return this.storageModule
+
+        // TODO: avoid recurssion - see legacy impl.
+        if (recurse) {
+            storageModule = StorageModuleInterface.init(settings, false);
+            this.storageModule = storageModule
+            return this //.storageModule
+        }
+        return this
     }
 
-    moduleSelector(aSettings) {
+    moduleSelector(aSettings = {}) {
         var toReturn;
         if (aSettings.storageModule) {
             if (typeof aSettings.storageModule === 'string') {
@@ -63,11 +70,14 @@ class StorageModuleInterface {
         return path.indexOf('../') != -1 || path.indexOf('..\\') != -1;
     }
 
-
+    // TODO: avoid recurssion - see legacy impl.
     getFlows() {
         let {
             storageModule
         } = this
+        _log('getFlows', {
+            storageModule
+        })
         return storageModule.getFlows().then(function (flows) {
             return storageModule.getCredentials().then(function (creds) {
                 var result = {
@@ -81,6 +91,10 @@ class StorageModuleInterface {
     }
 
     saveFlows(config) {
+        let {
+            storageModule,
+        } = this
+
         var flows = config.flows;
         var credentials = config.credentials;
         var credentialSavePromise;
@@ -104,6 +118,12 @@ class StorageModuleInterface {
     //     return storageModule.saveCredentials(credentials);
     // },
     getSettings() {
+        let {
+            storageModule,
+            sessionsAvailable,
+            settingsAvailable
+        } = this
+
         if (settingsAvailable) {
             return storageModule.getSettings();
         } else {
@@ -112,6 +132,12 @@ class StorageModuleInterface {
     }
 
     saveSettings(settings) {
+        let {
+            storageModule,
+            sessionsAvailable,
+            settingsAvailable
+        } = this
+
         if (settingsAvailable) {
             return storageModule.saveSettings(settings);
         } else {
@@ -120,6 +146,11 @@ class StorageModuleInterface {
     }
 
     getSessions() {
+        let {
+            storageModule,
+            sessionsAvailable
+        } = this
+
         if (sessionsAvailable) {
             return storageModule.getSessions();
         } else {
@@ -128,6 +159,11 @@ class StorageModuleInterface {
     }
 
     saveSessions(sessions) {
+        let {
+            storageModule,
+            sessionsAvailable
+        } = this
+
         if (sessionsAvailable) {
             return storageModule.saveSessions(sessions);
         } else {
@@ -136,8 +172,14 @@ class StorageModuleInterface {
     }
 
     /* Library Functions */
+
+    // TODO: avoid recurssion - see legacy impl.
     getLibraryEntry(type, path) {
-        if (is_malicious(path)) {
+        let {
+            storageModule
+        } = this
+
+        if (this.is_malicious(path)) {
             var err = new Error();
             err.code = 'forbidden';
             return when.reject(err);
@@ -145,8 +187,13 @@ class StorageModuleInterface {
         return storageModule.getLibraryEntry(type, path);
     }
 
+    // TODO: avoid recurssion - see legacy impl.
     saveLibraryEntry(type, path, meta, body) {
-        if (is_malicious(path)) {
+        let {
+            storageModule
+        } = this
+
+        if (this.is_malicious(path)) {
             var err = new Error();
             err.code = 'forbidden';
             return when.reject(err);
@@ -156,15 +203,22 @@ class StorageModuleInterface {
 
     /* Deprecated functions */
     getAllFlows() {
+        let {
+            storageModule
+        } = this
         if (storageModule.hasOwnProperty('getAllFlows')) {
             return storageModule.getAllFlows();
         } else {
-            return listFlows('/');
+            return this.listFlows('/');
         }
     }
 
     getFlow(fn) {
-        if (is_malicious(fn)) {
+        let {
+            storageModule
+        } = this
+
+        if (this.is_malicious(fn)) {
             var err = new Error();
             err.code = 'forbidden';
             return when.reject(err);
@@ -178,7 +232,11 @@ class StorageModuleInterface {
     }
 
     saveFlow(fn, data) {
-        if (is_malicious(fn)) {
+        let {
+            storageModule
+        } = this
+
+        if (this.is_malicious(fn)) {
             var err = new Error();
             err.code = 'forbidden';
             return when.reject(err);
@@ -193,6 +251,10 @@ class StorageModuleInterface {
     /* End deprecated functions */
 
     listFlows(path) {
+        let {
+            storageModule
+        } = this
+
         return storageModule.getLibraryEntry('flows', path).then(function (res) {
             return when.promise(function (resolve) {
                 var promises = [];
@@ -229,8 +291,8 @@ class StorageModuleInterface {
     }
 }
 
-StorageModuleInterface.init = function (runtime) {
-    return new StorageModuleInterface(runtime).configure()
+StorageModuleInterface.init = function (runtime, recurse = true) {
+    return new StorageModuleInterface(runtime).configure(recurse)
 }
 
 module.exports = StorageModuleInterface

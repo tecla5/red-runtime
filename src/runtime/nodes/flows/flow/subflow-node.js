@@ -1,6 +1,6 @@
 var Node = require('../node');
 
-module.exports = class SubFlowNode extends Node {
+class SubFlowNode extends Node {
   constructor(flow) {
     super(flow)
   }
@@ -49,3 +49,9 @@ module.exports = class SubFlowNode extends Node {
     }
   }
 }
+
+SubFlowNode.init = function (flow) {
+  return new SubFlowNode(flow);
+}
+
+module.exports = SubFlowNode

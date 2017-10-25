@@ -19,6 +19,10 @@ var paff = require('path');
 var Storage = require('../../../src/runtime/storage/index');
 var storage
 
+const {
+    log
+} = console
+
 describe('red/storage/index', function () {
 
     it('rejects the promise when settings suggest loading a bad module', function (done) {
@@ -57,6 +61,7 @@ describe('red/storage/index', function () {
             }
         };
 
+        // TODO: fix it
         storage = Storage.init(setsBooleanModule);
         initSetsMeToTrue.should.be.true();
         done();
@@ -133,6 +138,12 @@ describe('red/storage/index', function () {
 
         var promises = [];
         storage = Storage.init(moduleToLoad);
+
+        // TODO: debug and fix
+        // log({
+        //     storage
+        // })
+
         promises.push(storage.getFlows());
         promises.push(storage.saveFlows({
             flows: [],

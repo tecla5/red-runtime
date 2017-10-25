@@ -18,7 +18,7 @@ var should = require('should');
 var sinon = require('sinon');
 var RedNode = require('../../../src/runtime/nodes/Node');
 var Log = require('../../../src/runtime/log');
-var flows = require('../../../src/runtime/nodes/flows');
+var Flows = require('../../../src/runtime/nodes/flows');
 
 describe('Node', function () {
     describe('#constructor', function () {
@@ -88,9 +88,7 @@ describe('Node', function () {
                 testdone();
             });
         });
-        it('accepts a callback with '
-            removed ' and '
-            done ' parameters',
+        it('accepts a callback with "removed" and "done" parameters',
             function (testdone) {
                 var n = new RedNode({
                     id: '123',

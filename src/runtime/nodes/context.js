@@ -18,7 +18,7 @@ var clone = require('clone');
 var when = require('when');
 var util = require('../util');
 
-module.exports = class Context {
+class Context {
     constructor(settings) {
         this.contexts = {};
         this.globalContext = this.createContext('global', settings.functionGlobalContext || {});
@@ -81,3 +81,9 @@ module.exports = class Context {
     }
 
 };
+
+Context.init = function (settings) {
+    return new Context(settings)
+}
+
+module.exports = Context

@@ -18,10 +18,10 @@ var when = require('when');
 var fs = require('fs');
 var path = require('path');
 
-var events = require('../../events');
-var registry = require('./registry');
-var loader = require('./loader');
-var installer = require('./installer');
+var Events = require('../../events');
+var Registry = require('./registry');
+var Loader = require('./loader');
+var Installer = require('./installer');
 
 class RegistryFactory {
     constructor(runtime) {
@@ -75,10 +75,14 @@ class RegistryFactory {
     }
 };
 
+RegistryFactory.init = function (runtime) {
+    return new RegistryFactory(runtime)
+}
+
 module.exports = {
     RegistryFactory,
     Installer,
     Loader,
     Registry,
-    LocalFilesystem
+    // LocalFilesystem
 }

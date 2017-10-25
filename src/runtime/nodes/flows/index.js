@@ -25,11 +25,10 @@ var credentials = require('../credentials');
 
 var flowUtil = require('./util');
 var log = require('../../log');
-var events = require('../../events');
+var Events = require('../../events');
 var redUtil = require('../../util');
 var deprecated = require('../registry/deprecated');
-
-module.exports = class Flows {
+class Flows {
     constructor(runtime) {
         this.settings = runtime.settings;
         this.storage = runtime.storage;
@@ -680,3 +679,9 @@ module.exports = class Flows {
         });
     }
 };
+
+Flows.init = function (runtime) {
+    return new Flows(runtime)
+}
+
+module.exports = Flows

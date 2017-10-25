@@ -17,7 +17,7 @@
 var when = require('when');
 var crypto = require('crypto');
 
-module.exports = class Credentials {
+class Credentials {
     constructor(runtime) {
         this.log = runtime.log;
         this.settings = runtime.settings;
@@ -321,3 +321,9 @@ module.exports = class Credentials {
         }
     }
 }
+
+Credentials.init = function (runtime) {
+    return new Credentials(runtime)
+}
+
+module.exports = Credentials

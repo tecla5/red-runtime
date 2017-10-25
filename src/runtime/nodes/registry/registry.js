@@ -26,7 +26,7 @@ var icon_paths = {
 };
 var defaultIcon = path.resolve(__dirname + '/../../../../public/icons/arrow-in.png');
 
-module.exports = class Registry {
+class Registry {
     constructor(_settings, _loader) {
         this.settings = _settings;
         this.loader = _loader;
@@ -597,3 +597,9 @@ module.exports = class Registry {
         }
     }
 };
+
+Registry.init = function (_settings, _loader) {
+    return new Credentials(_settings, _loader)
+}
+
+module.exports = Registry
