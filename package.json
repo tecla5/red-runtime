@@ -11,7 +11,10 @@
     "test": "mocha",
     "test:coverage": "mocha --reporter mocha-istanbul --require expect --reportFormats lcov --print both",
     "build:prod": "webpack --progress --colors --env=prod",
-    "build:dev": "webpack --progress --colors --env=dev"
+    "build:dev": "webpack --progress --colors --env=dev",
+    "lerna:update": "npm run lerna:clean && npm run lerna:bootstrap",
+    "lerna:bootstrap": "lerna bootstrap --scope red-runtime",
+    "lerna:clean": "rm -f package.json.lock 2> /dev/null && echo y | lerna clean --scope red-runtime"
   },
   "keywords": [
     "nodered",
